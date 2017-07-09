@@ -1,0 +1,19 @@
+{
+  "name": "t-money",
+  "email": "",
+  "url": "",
+  "watch": {
+    "build": {
+        "patterns": ["main.ts", "src"],
+        "extensions": "ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc && rollup -c",
+    "serve": "http-server -o -c-1",
+    "start": "concurrently \"npm-watch build\" \"npm run serve\" "
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.0"
+  }
+}
