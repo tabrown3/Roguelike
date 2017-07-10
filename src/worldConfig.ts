@@ -1,0 +1,1 @@
+export const VIEW_DIMS = {X: 80, Y: 25};
