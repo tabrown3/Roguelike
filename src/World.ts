@@ -1,8 +1,17 @@
 import { IWorld } from './IWorld';
 import { Player } from './Player';
+import { IEventHandler } from './IEventHandler';
+import { injectable, inject } from "inversify";
+import { TYPES } from './types';
 
+@injectable()
 export class World implements IWorld {
-    constructor(private player: Player) {
+
+    private player: Player = new Player();
+
+    constructor(
+        // @inject(TYPES.Player) private player: Player,
+        @inject(TYPES.EventHandler) private eventHandler: IEventHandler) {
 
     }
 
@@ -18,13 +27,12 @@ export class World implements IWorld {
         }
 
         let playerPos = this.player.getWorldPos();
-        outArr[playerPos.x][playerPos.y] = this.player.avatar;
+        outArr[playerPos.x][playerPos.y] = this.player.getCharMatrix();
 
         return outArr;
     }
 
     public update = (): void => {
-
-        throw new TypeError("Not implemented");
+        this.player.update(this.eventHandler);
     }
 }

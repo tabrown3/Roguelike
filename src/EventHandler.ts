@@ -1,5 +1,7 @@
 import { IEventHandler } from './IEventHandler';
+import { injectable, inject } from "inversify";
 
+@injectable()
 export class EventHandler implements IEventHandler {
 
     private lastKeyDown: string;

@@ -2,10 +2,14 @@
   "name": "t-money",
   "email": "",
   "url": "",
+  "version": "0.0.1",
   "watch": {
     "build": {
-        "patterns": ["main.ts", "src"],
-        "extensions": "ts"
+      "patterns": [
+        "main.ts",
+        "src"
+      ],
+      "extensions": "ts"
     }
   },
   "scripts": {
@@ -14,6 +18,12 @@
     "start": "concurrently \"npm-watch build\" \"npm run serve\" "
   },
   "devDependencies": {
-    "concurrently": "^3.5.0"
+    "concurrently": "^3.5.0",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0"
+  },
+  "dependencies": {
+    "inversify": "^4.2.0",
+    "reflect-metadata": "^0.1.10"
   }
 }

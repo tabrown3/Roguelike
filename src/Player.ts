@@ -1,11 +1,20 @@
 import { IEventHandler } from './IEventHandler';
 import { Vec2 } from './Vec2';
+import { IDrawable } from './IDrawable';
+import { injectable, inject } from "inversify";
 
-export class Player {
+@injectable()
+export class Player implements IDrawable {
 
     private worldPosX: number = 5;
     private worldPosY: number = 5;
-    public avatar: string = "@";
+
+    constructor() {
+
+    }
+
+    public getCharMatrix = (): string => "@";
+    public getAnchorPos = (): Vec2 => this.getWorldPos();
 
     public setWorldPos = (x: number, y: number) => {
 

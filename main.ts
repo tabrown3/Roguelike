@@ -1,15 +1,13 @@
 import { Game } from './src/Game';
-import { VIEW_DIMS } from './src/worldConfig';
-
-declare var ROT: any;
+import { myContainer } from './src/container';
+import { TYPES } from './src/types';
 
 window.onload = (function() {
 
-    var display = new ROT.Display({ width: VIEW_DIMS.X, height: VIEW_DIMS.Y});
-    document.getElementById("game-canvas").appendChild(display.getContainer());
+    //let world = new World(new Player(), new EventHandler());
 
-    var game = new Game(display);
-    game.initialize();
+    //let game = new Game(world, new ViewEngine(new Display()));
+    let game = myContainer.get<Game>(TYPES.Game);
     game.start();
 
     // display.draw(5,  3, "╔");
