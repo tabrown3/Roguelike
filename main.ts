@@ -1,5 +1,5 @@
 import { Game } from './src/Game';
-import { myContainer } from './src/container';
+import { container } from './src/container';
 import { TYPES } from './src/types';
 
 window.onload = (function() {
@@ -7,7 +7,7 @@ window.onload = (function() {
     //let world = new World(new Player(), new EventHandler());
 
     //let game = new Game(world, new ViewEngine(new Display()));
-    let game = myContainer.get<Game>(TYPES.Game);
+    let game = container.get<Game>(TYPES.Game);
     game.start();
 
     // display.draw(5,  3, "╔");

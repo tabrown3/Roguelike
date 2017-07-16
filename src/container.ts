@@ -6,12 +6,14 @@ import { World } from './World';
 import { ViewEngine } from './ViewEngine';
 import { EventHandler } from './EventHandler';
 import { Display } from './Display';
+import { Player } from './Player';
 
-var myContainer = new Container();
-myContainer.bind(TYPES.Game).to(Game);
-myContainer.bind(TYPES.World).to(World);
-myContainer.bind(TYPES.ViewEngine).to(ViewEngine);
-myContainer.bind(TYPES.Display).to(Display);
-myContainer.bind(TYPES.EventHandler).to(EventHandler);
+var container = new Container();
+container.bind(TYPES.Game).to(Game);
+container.bind(TYPES.World).to(World);
+container.bind(TYPES.ViewEngine).to(ViewEngine);
+container.bind(TYPES.Display).to(Display).inSingletonScope();
+container.bind(TYPES.EventHandler).to(EventHandler);
+container.bind(TYPES.Player).to(Player).inSingletonScope();
 
-export { myContainer };
+export { container };

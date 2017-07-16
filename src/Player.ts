@@ -1,48 +1,66 @@
 import { IEventHandler } from './IEventHandler';
-import { Vec2 } from './Vec2';
-import { IDrawable } from './IDrawable';
+import Vec2 from './Vec2';
 import { injectable, inject } from "inversify";
+import Color from './Color';
+import Being from './Being';
+import { InspectionResult } from './InspectionResult';
+import Fixture from './Fixture';
 
 @injectable()
-export class Player implements IDrawable {
+export class Player {
 
-    private worldPosX: number = 5;
-    private worldPosY: number = 5;
+    public readonly being: Being;
 
     constructor() {
 
+        this.being = new Being(
+            "@",
+            { r: 255, g: 255, b: 255 },
+            { r: 0, g: 0, b: 0 }
+        );
     }
 
-    public getCharMatrix = (): string => "@";
-    public getAnchorPos = (): Vec2 => this.getWorldPos();
+    public update = (eventHandler: IEventHandler, inspectPos: (pos: Vec2) => InspectionResult) => {
 
-    public setWorldPos = (x: number, y: number) => {
-
-        this.worldPosX = x;
-        this.worldPosY = y;
-    }
-
-    public getWorldPos = (): Vec2 => {
-
-        return new Vec2(this.worldPosX, this.worldPosY);
-    }
-
-    public update = (eventHandler: IEventHandler) => {
+        let attemptLocalPos: Vec2;
 
         switch(eventHandler.getLastMove()) {
             case "w":
-                this.setWorldPos(this.worldPosX, this.worldPosY - 1);
+                attemptLocalPos = new Vec2(0, -1);
                 break;
             case "d":
-                this.setWorldPos(this.worldPosX + 1, this.worldPosY);
+                attemptLocalPos = new Vec2(1, 0);
                 break;
             case "s":
-                this.setWorldPos(this.worldPosX, this.worldPosY + 1);
+                attemptLocalPos = new Vec2(0, 1);
                 break;
             case "a":
-                this.setWorldPos(this.worldPosX - 1, this.worldPosY);
+                attemptLocalPos = new Vec2(-1, 0);
                 break;
             default:
         }
+
+        if(attemptLocalPos && this.canMove(inspectPos(attemptLocalPos))){
+            this.being.setPosLocal(attemptLocalPos);
+        }
+    }
+
+    private canMove = (inspectionResult: InspectionResult): boolean => {
+
+        let worldSpot = inspectionResult.worldSpot;
+
+        let navigableSpot: boolean = worldSpot.navigable; // does this tile allow movement to it?
+        let hasEntities: boolean = worldSpot.entities && worldSpot.entities.length > 0; // is there anything on this tile?
+
+        let navigableFixtures = true;
+        if(hasEntities) {
+            let fixtures = <Fixture[]>worldSpot.entities.filter(entity => {
+                return entity instanceof Fixture;
+            });
+
+            navigableFixtures = fixtures.every(fixture => fixture.navigable);
+        }
+
+        return navigableSpot && navigableFixtures;
     }
 }
