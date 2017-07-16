@@ -29,7 +29,7 @@ export class WorldMap {
 
     public setEntity = (entity: Entity, pos: Vec2): void => {
         
-        this.removeEntity(entity, entity.getPos());
+        this.removeEntity(entity, entity.getOldPos());
 
         let toSpot = this.getSpot(pos);
         toSpot.entities.push(entity);

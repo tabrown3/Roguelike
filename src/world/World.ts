@@ -1,11 +1,14 @@
-import { IWorld } from './IWorld';
-import { Player } from './Player';
-import { IEventHandler } from './IEventHandler';
+import { IWorld } from '../IWorld';
+import { Player } from '../Player';
+import { IEventHandler } from '../IEventHandler';
 import { injectable, inject } from "inversify";
-import { TYPES } from './types';
-import Vec2 from './Vec2';
-import { InspectionResult } from './InspectionResult';
-import { WorldMap } from './WorldMap';
+import { TYPES } from '../types';
+import Vec2 from '../Vec2';
+import { InspectionResult } from '../InspectionResult';
+import { WorldMap } from '../WorldMap';
+import Entity from '../Entity';
+import { ActionRequest } from './ActionRequest';
+import { PermissionResponse } from './PermissionResponse';
 
 @injectable()
 export class World implements IWorld {
@@ -46,5 +49,10 @@ export class World implements IWorld {
             pos: pos,
             worldSpot: this.worldMap.getSpot(pos)
         };
+    }
+
+    private requestAction = (request: ActionRequest): PermissionResponse => {
+
+        throw new TypeError("not implemented");
     }
 }

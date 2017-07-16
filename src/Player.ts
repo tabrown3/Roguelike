@@ -40,8 +40,14 @@ export class Player {
             default:
         }
 
-        if(attemptLocalPos && this.canMove(inspectPos(attemptLocalPos))){
-            this.being.setPosLocal(attemptLocalPos);
+        if(attemptLocalPos){
+
+            let worldPos = this.being.getPosLocal(attemptLocalPos)
+            let inspectionResult = inspectPos(worldPos)
+
+            if (this.canMove(inspectionResult)) {
+                this.being.setPosLocal(attemptLocalPos);
+            }
         }
     }
 
