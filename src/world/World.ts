@@ -4,11 +4,11 @@ import { IEventHandler } from '../IEventHandler';
 import { injectable, inject } from "inversify";
 import { TYPES } from '../types';
 import Vec2 from '../Vec2';
-import { InspectionResult } from '../InspectionResult';
+import InspectionResult from '../InspectionResult';
 import { WorldMap } from '../WorldMap';
 import Entity from '../Entity';
-import { ActionRequest } from './ActionRequest';
-import { PermissionResponse } from './PermissionResponse';
+import ActionRequest from './ActionRequest';
+import PermissionResponse from './PermissionResponse';
 
 @injectable()
 export class World implements IWorld {
@@ -38,18 +38,18 @@ export class World implements IWorld {
     }
 
     public update = (): void => {
-        this.player.update(this.eventHandler, this.inspectPos);
+        this.player.update(this.eventHandler, this.requestAction);
         this.worldMap.setEntity(this.player.being, this.player.being.getPos());
         // TODO: everything else updates here?
     }
 
-    private inspectPos = (pos: Vec2): InspectionResult => {
-        // return information about this grid square in the world
-        return {
-            pos: pos,
-            worldSpot: this.worldMap.getSpot(pos)
-        };
-    }
+    // private inspectPos = (pos: Vec2): InspectionResult => {
+    //     // return information about this grid square in the world
+    //     return {
+    //         pos: pos,
+    //         worldSpot: this.worldMap.getSpot(pos)
+    //     };
+    // }
 
     private requestAction = (request: ActionRequest): PermissionResponse => {
 

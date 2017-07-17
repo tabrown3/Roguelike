@@ -3,8 +3,10 @@ import Vec2 from './Vec2';
 import { injectable, inject } from "inversify";
 import Color from './Color';
 import Being from './Being';
-import { InspectionResult } from './InspectionResult';
+import InspectionResult from './InspectionResult';
 import Fixture from './Fixture';
+import ActionRequest from './world/ActionRequest';
+import PermissionResponse from './world/PermissionResponse';
 
 @injectable()
 export class Player {
@@ -20,7 +22,7 @@ export class Player {
         );
     }
 
-    public update = (eventHandler: IEventHandler, inspectPos: (pos: Vec2) => InspectionResult) => {
+    public update = (eventHandler: IEventHandler, requestionAction: (request: ActionRequest) => PermissionResponse) => {
 
         let attemptLocalPos: Vec2;
 
@@ -43,30 +45,30 @@ export class Player {
         if(attemptLocalPos){
 
             let worldPos = this.being.getPosLocal(attemptLocalPos)
-            let inspectionResult = inspectPos(worldPos)
+            // let inspectionResult = inspectPos(worldPos)
 
-            if (this.canMove(inspectionResult)) {
-                this.being.setPosLocal(attemptLocalPos);
-            }
+            // if (this.canMove(inspectionResult)) {
+            //     this.being.setPosLocal(attemptLocalPos);
+            // }
         }
     }
 
-    private canMove = (inspectionResult: InspectionResult): boolean => {
+    // private canMove = (inspectionResult: InspectionResult): boolean => {
 
-        let worldSpot = inspectionResult.worldSpot;
+    //     let worldSpot = inspectionResult.worldSpot;
 
-        let navigableSpot: boolean = worldSpot.navigable; // does this tile allow movement to it?
-        let hasEntities: boolean = worldSpot.entities && worldSpot.entities.length > 0; // is there anything on this tile?
+    //     let navigableSpot: boolean = worldSpot.navigable; // does this tile allow movement to it?
+    //     let hasEntities: boolean = worldSpot.entities && worldSpot.entities.length > 0; // is there anything on this tile?
 
-        let navigableFixtures = true;
-        if(hasEntities) {
-            let fixtures = <Fixture[]>worldSpot.entities.filter(entity => {
-                return entity instanceof Fixture;
-            });
+    //     let navigableFixtures = true;
+    //     if(hasEntities) {
+    //         let fixtures = <Fixture[]>worldSpot.entities.filter(entity => {
+    //             return entity instanceof Fixture;
+    //         });
 
-            navigableFixtures = fixtures.every(fixture => fixture.navigable);
-        }
+    //         navigableFixtures = fixtures.every(fixture => fixture.navigable);
+    //     }
 
-        return navigableSpot && navigableFixtures;
-    }
+    //     return navigableSpot && navigableFixtures;
+    // }
 }
