@@ -1,19 +1,19 @@
-import Vec2 from './Vec2';
+import Vec2 from './common/Vec2';
 import Entity from './Entity';
-import Color from './Color';
+import Color from './common/Color';
 
 export default class Being extends Entity {
     
-    constructor(private icon:string, private colorFore: Color, private colorBack: Color) {
+    constructor(private _icon:string, private _colorFore: Color, private _colorBack: Color) {
         super();
     }
 
-    public getIcon = (): string => this.icon;
-    public setIcon = (icon: string) => this.icon = icon;
-    public getColorFore = () => this.colorFore;
-    public setColorFore = (color: Color) => this.colorFore = color;
-    public getColorBack = () => this.colorBack;
-    public setColorBack = (color: Color) => this.colorFore = color;
+    public get icon(): string { return this._icon; }
+    public set icon(icon: string) { this._icon = icon; }
+    public get colorFore() { return this._colorFore; }
+    public set colorFore(color: Color) { this._colorFore = color; }
+    public get colorBack() { return this._colorBack; }
+    public set colorBack(color: Color) { this._colorFore = color; }
 
     // sets the world pos of the entity offset by the input
     public setPosLocal = (pos: Vec2) => {

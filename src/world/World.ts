@@ -1,11 +1,11 @@
-import { IWorld } from '../IWorld';
+import { IWorld } from './IWorld';
 import { Player } from '../Player';
 import { IEventHandler } from '../IEventHandler';
 import { injectable, inject } from "inversify";
 import { TYPES } from '../types';
-import Vec2 from '../Vec2';
+import Vec2 from './../common/Vec2';
 import InspectionResult from '../InspectionResult';
-import WorldMap from '../WorldMap';
+import WorldMap from './WorldMap';
 import Entity from '../Entity';
 import ActionRequest from './ActionRequest';
 import ActionPermission from './ActionPermission';
@@ -32,7 +32,7 @@ export class World implements IWorld {
         for(let i = 0; i < 80; i++) {
             outArr[i] = [];
             for(let j = 0; j < 25; j++) {
-                outArr[i][j] = map[i][j].getDisplayIcon();
+                outArr[i][j] = map[i][j].toDrawable().icon;
             }
         }
 

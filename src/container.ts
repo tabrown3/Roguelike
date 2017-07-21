@@ -3,9 +3,9 @@ import { Container } from "inversify";
 import { TYPES } from "./types";
 import { Game } from './Game';
 import { World } from './world/World';
-import { ViewEngine } from './ViewEngine';
+import { ViewEngine } from './display/ViewEngine';
 import { EventHandler } from './EventHandler';
-import { Display } from './Display';
+import { Display } from './display/Display';
 import { Player } from './Player';
 import WorldManager from './world/WorldManager';
 

@@ -1,13 +1,14 @@
-import Entity from './Entity';
-import Being from './Being';
-import Fixture from './Fixture';
+import Entity from './../Entity';
+import Being from './../Being';
+import Fixture from './../Fixture';
+import IDrawable from '../display/IDrawable';
+import Terrain from './Terrain';
 
 export default class WorldSpot {
 
     constructor(
         public entities: Entity[],
-        private icon: string, // TODO: consider making Terrain
-        public navigable: boolean) // TODO: consider making Terrain
+        public terrain: Terrain) // TODO: consider making Terrain
     {
         this.entities = [];
     }
@@ -37,11 +38,11 @@ export default class WorldSpot {
     }
 
     // TODO: figure out the actual method for determining what to show
-    public getDisplayIcon = () => {
+    public toDrawable = (): IDrawable => {
 
         if (this.entities && this.entities.length > 0)
-            return this.entities[0].getIcon();
+            return this.entities[0];
         else
-            return this.icon;
+            return this.terrain;
     }
 }

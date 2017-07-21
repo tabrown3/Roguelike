@@ -1,7 +1,7 @@
 import ActionRequest from './ActionRequest';
 import ActionPermission from './ActionPermission';
-import WorldMap from '../WorldMap';
-import WorldSpot from '../WorldSpot';
+import WorldMap from './WorldMap';
+import WorldSpot from './WorldSpot';
 import Entity from '../Entity';
 
 export default interface IWorldManager {

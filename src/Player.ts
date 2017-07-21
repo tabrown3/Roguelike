@@ -1,7 +1,7 @@
 import { IEventHandler } from './IEventHandler';
-import Vec2 from './Vec2';
+import Vec2 from './common/Vec2';
 import { injectable, inject } from "inversify";
-import Color from './Color';
+import Color from './common/Color';
 import Being from './Being';
 import InspectionResult from './InspectionResult';
 import Fixture from './Fixture';
@@ -22,8 +22,8 @@ export class Player {
 
         this.being = new Being(
             "@",
-            { r: 255, g: 255, b: 255 },
-            { r: 0, g: 0, b: 0 }
+            new Color("F", "F", "F"),
+            new Color("0", "0", "0"),
         );
 
         this.worldManager.initEntity(this.being);

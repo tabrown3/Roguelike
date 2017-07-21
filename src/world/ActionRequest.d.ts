@@ -1,5 +1,5 @@
 import { ActionType } from './ActionType';
-import Vec2 from '../Vec2';
+import Vec2 from './../common/Vec2';
 import Being from '../Being';
 
 export default interface ActionRequest {

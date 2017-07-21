@@ -1,6 +1,8 @@
 import WorldSpot from './WorldSpot';
-import Vec2 from './Vec2';
-import Entity from './Entity';
+import Vec2 from './../common/Vec2';
+import Entity from './../Entity';
+import Terrain from './Terrain';
+import Color from '../common/Color';
 
 export default class WorldMap {
     
@@ -12,7 +14,13 @@ export default class WorldMap {
             this.worldSpots[i] = [];
 
             for (let j = 0; j < 25; j++) {
-                this.worldSpots[i][j] = new WorldSpot( [], ".", true)
+                this.worldSpots[i][j] = new WorldSpot( [],
+                    new Terrain({
+                        icon: ".",
+                        colorFore: new Color("F", "F", "F"),
+                        colorBack: new Color("0", "0", "0")
+                    }, true)
+                )
             }
         }
     }

@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { VIEW_DIMS } from './worldConfig';
+import { VIEW_DIMS } from './../worldConfig';
 import { IDisplay } from './IDisplay';
 
 declare var ROT: any;

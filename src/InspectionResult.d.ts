@@ -1,5 +1,5 @@
-import Vec2 from './Vec2';
-import WorldSpot from './WorldSpot';
+import Vec2 from './common/Vec2';
+import WorldSpot from './world/WorldSpot';
 
 export default interface InspectionResult {
     pos: Vec2;

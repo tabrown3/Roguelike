@@ -1,5 +1,5 @@
-import { IWorld } from './IWorld';
-import { IViewEngine } from './IViewEngine';
+import { IWorld } from './world/IWorld';
+import { IViewEngine } from './display/IViewEngine';
 import { injectable, inject } from "inversify";
 import { TYPES } from './types';
 

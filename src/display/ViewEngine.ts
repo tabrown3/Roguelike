@@ -1,8 +1,8 @@
 import { IViewEngine } from './IViewEngine';
-import { IWorld } from './IWorld';
+import { IWorld } from '../world/IWorld';
 import { injectable, inject } from "inversify";
-import { TYPES } from './types';
-import { VIEW_DIMS } from './worldConfig';
+import { TYPES } from './../types';
+import { VIEW_DIMS } from './../worldConfig';
 
 @injectable()
 export class ViewEngine implements IViewEngine {

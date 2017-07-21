@@ -1,4 +1,4 @@
-import { IWorld } from './IWorld';
+import { IWorld } from '../world/IWorld';
 
 export interface IViewEngine {
 

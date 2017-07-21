@@ -4,9 +4,9 @@ import ActionRequest from './ActionRequest';
 import ActionPermission from './ActionPermission';
 import { ActionType } from './ActionType';
 import { PermissionType } from './PermissionType';
-import Vec2 from '../Vec2';
-import WorldMap from '../WorldMap';
-import WorldSpot from '../WorldSpot';
+import Vec2 from './../common/Vec2';
+import WorldMap from './WorldMap';
+import WorldSpot from './WorldSpot';
 import Entity from '../Entity';
 
 @injectable()
@@ -20,6 +20,12 @@ export default class WorldManager implements IWorldManager {
             if (this.canMoveTo(request.pos)) {
                 return {
                     type: PermissionType.Granted,
+                    alternatives: <ActionType[]>[]
+                };
+            }
+            else {
+                return {
+                    type: PermissionType.Denied,
                     alternatives: <ActionType[]>[]
                 };
             }
@@ -48,7 +54,7 @@ export default class WorldManager implements IWorldManager {
 
         let worldSpot = this.worldMap.getSpot(pos);
 
-        let navigableSpot: boolean = worldSpot.navigable; // does this tile allow movement to it?
+        let navigableSpot: boolean = worldSpot.terrain.navigable; // does this tile allow movement to it?
         let hasEntities: boolean = worldSpot.entities && worldSpot.entities.length > 0; // is there anything on this tile?
 
         let navigableFixtures = true; // if there are no entities, no fixtures to obstruct

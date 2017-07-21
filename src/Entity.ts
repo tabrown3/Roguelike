@@ -1,17 +1,18 @@
-import Vec2 from './Vec2';
-import Color from './Color';
+import Vec2 from './common/Vec2';
+import Color from './common/Color';
+import IDrawable from './display/IDrawable';
 
-export default abstract class Entity {
+export default abstract class Entity implements IDrawable {
     
     private readonly worldPos: Vec2 = new Vec2(0, 0);
     private readonly prevWorldPos: Vec2 = new Vec2(0, 0);
 
-    public abstract getIcon: () => string;
-    public abstract setIcon: (icon: string) => void;
-    public abstract getColorFore: () => Color;
-    public abstract setColorFore: (color: Color) => void;
-    public abstract getColorBack: () => Color;
-    public abstract setColorBack: (color: Color) => void;
+    public abstract get icon(): string;
+    public abstract set icon(icon: string);
+    public abstract get colorFore(): Color;
+    public abstract set colorFore(color: Color);
+    public abstract set colorBack(color: Color);
+    public abstract get colorBack(): Color;
 
     public getPos = (): Vec2 => {
 
