@@ -6,23 +6,30 @@ import Being from './Being';
 import InspectionResult from './InspectionResult';
 import Fixture from './Fixture';
 import ActionRequest from './world/ActionRequest';
-import PermissionResponse from './world/PermissionResponse';
+import ActionPermission from './world/ActionPermission';
+import { ActionType } from './world/ActionType';
+import { PermissionType } from './world/PermissionType';
+import IWorldManager from './world/IWorldManager';
+import { TYPES } from './types';
 
 @injectable()
 export class Player {
 
     public readonly being: Being;
 
-    constructor() {
+    constructor(
+        @inject(TYPES.WorldManager) private worldManager: IWorldManager) {
 
         this.being = new Being(
             "@",
             { r: 255, g: 255, b: 255 },
             { r: 0, g: 0, b: 0 }
         );
+
+        this.worldManager.initEntity(this.being);
     }
 
-    public update = (eventHandler: IEventHandler, requestionAction: (request: ActionRequest) => PermissionResponse) => {
+    public update = (eventHandler: IEventHandler) => {
 
         let attemptLocalPos: Vec2;
 
@@ -42,33 +49,27 @@ export class Player {
             default:
         }
 
-        if(attemptLocalPos){
+        if (attemptLocalPos) {
 
-            let worldPos = this.being.getPosLocal(attemptLocalPos)
-            // let inspectionResult = inspectPos(worldPos)
-
-            // if (this.canMove(inspectionResult)) {
-            //     this.being.setPosLocal(attemptLocalPos);
-            // }
+            this.attemptMove(attemptLocalPos);
         }
     }
 
-    // private canMove = (inspectionResult: InspectionResult): boolean => {
+    private attemptMove = (attemptLocalPos: Vec2) => {
 
-    //     let worldSpot = inspectionResult.worldSpot;
+        let worldPos = this.being.getPosLocal(attemptLocalPos);
 
-    //     let navigableSpot: boolean = worldSpot.navigable; // does this tile allow movement to it?
-    //     let hasEntities: boolean = worldSpot.entities && worldSpot.entities.length > 0; // is there anything on this tile?
+        let request = {
+            type: ActionType.Move,
+            pos: worldPos,
+            requestor: this.being
+        };
 
-    //     let navigableFixtures = true;
-    //     if(hasEntities) {
-    //         let fixtures = <Fixture[]>worldSpot.entities.filter(entity => {
-    //             return entity instanceof Fixture;
-    //         });
+        let response = this.worldManager.requestAction(request);
 
-    //         navigableFixtures = fixtures.every(fixture => fixture.navigable);
-    //     }
-
-    //     return navigableSpot && navigableFixtures;
-    // }
+        if (response.type === PermissionType.Granted) {
+            this.being.setPosLocal(attemptLocalPos);
+            this.worldManager.commitAction(request);
+        }
+    }
 }

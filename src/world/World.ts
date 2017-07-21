@@ -5,27 +5,29 @@ import { injectable, inject } from "inversify";
 import { TYPES } from '../types';
 import Vec2 from '../Vec2';
 import InspectionResult from '../InspectionResult';
-import { WorldMap } from '../WorldMap';
+import WorldMap from '../WorldMap';
 import Entity from '../Entity';
 import ActionRequest from './ActionRequest';
-import PermissionResponse from './PermissionResponse';
+import ActionPermission from './ActionPermission';
+import { ActionType } from './ActionType';
+import Fixture from '../Fixture';
+import { PermissionType } from './PermissionType';
+import Being from '../Being';
+import IWorldManager from './WorldManager';
 
 @injectable()
 export class World implements IWorld {
 
-    private readonly worldMap: WorldMap = new WorldMap(); // TODO: inject or treat as data structure?
-
     constructor(
         @inject(TYPES.Player) private player: Player,
-        @inject(TYPES.EventHandler) private eventHandler: IEventHandler) {
-
-        this.worldMap.setEntity(this.player.being, this.player.being.getPos());
+        @inject(TYPES.EventHandler) private eventHandler: IEventHandler,
+        @inject(TYPES.WorldManager) private worldManager: IWorldManager) {
     }
 
     public getView = (): string[][] => {
         
         let outArr: string[][] = [];
-        let map = this.worldMap.getMap();
+        let map = this.worldManager.getWorldMap();
 
         for(let i = 0; i < 80; i++) {
             outArr[i] = [];
@@ -38,21 +40,7 @@ export class World implements IWorld {
     }
 
     public update = (): void => {
-        this.player.update(this.eventHandler, this.requestAction);
-        this.worldMap.setEntity(this.player.being, this.player.being.getPos());
+        this.player.update(this.eventHandler);
         // TODO: everything else updates here?
-    }
-
-    // private inspectPos = (pos: Vec2): InspectionResult => {
-    //     // return information about this grid square in the world
-    //     return {
-    //         pos: pos,
-    //         worldSpot: this.worldMap.getSpot(pos)
-    //     };
-    // }
-
-    private requestAction = (request: ActionRequest): PermissionResponse => {
-
-        throw new TypeError("not implemented");
     }
 }

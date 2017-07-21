@@ -4,7 +4,8 @@ let TYPES = {
     Game: Symbol("Game"),
     EventHandler: Symbol("EventHandler"),
     ViewEngine: Symbol("ViewEngine"),
-    Display: Symbol("Display")
+    Display: Symbol("Display"),
+    WorldManager: Symbol("WorldManager")
 };
 
 export { TYPES }

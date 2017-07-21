@@ -20,8 +20,6 @@ export default abstract class Entity {
 
     public setPos = (pos: Vec2) => {
 
-        // this.prevWorldPos.x = this.worldPos.x;
-        // this.prevWorldPos.y = this.worldPos.y;
         this.setOldPos(this.worldPos);
         this.worldPos.x = pos.x;
         this.worldPos.y = pos.y;
