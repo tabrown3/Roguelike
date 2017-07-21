@@ -18,7 +18,7 @@ export class ViewEngine implements IViewEngine {
 
         for(let x = 0; x < VIEW_DIMS.X; x++) {
             for(let y = 0; y < VIEW_DIMS.Y; y++) {
-                this.display.getDisplay().draw(x, y, map[x][y]);
+                this.display.getDisplay().draw(x, y, map[x][y].icon, map[x][y].colorFore.getFull(), map[x][y].colorBack.getFull());
             }
         }
     }

@@ -1,4 +1,6 @@
+import IDrawable from '../display/IDrawable';
+
 export interface IWorld {
-    getView(): string[][];
+    getView(): IDrawable[][];
     update(): void;
 }

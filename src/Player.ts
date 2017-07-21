@@ -22,8 +22,8 @@ export class Player {
 
         this.being = new Being(
             "@",
-            new Color("F", "F", "F"),
             new Color("0", "0", "0"),
+            new Color("F", "F", "F"),
         );
 
         this.worldManager.initEntity(this.being);

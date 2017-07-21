@@ -14,6 +14,7 @@ import Fixture from '../Fixture';
 import { PermissionType } from './PermissionType';
 import Being from '../Being';
 import IWorldManager from './WorldManager';
+import IDrawable from '../display/IDrawable';
 
 @injectable()
 export class World implements IWorld {
@@ -24,15 +25,15 @@ export class World implements IWorld {
         @inject(TYPES.WorldManager) private worldManager: IWorldManager) {
     }
 
-    public getView = (): string[][] => {
+    public getView = (): IDrawable[][] => {
         
-        let outArr: string[][] = [];
+        let outArr: IDrawable[][] = [];
         let map = this.worldManager.getWorldMap();
 
         for(let i = 0; i < 80; i++) {
             outArr[i] = [];
             for(let j = 0; j < 25; j++) {
-                outArr[i][j] = map[i][j].toDrawable().icon;
+                outArr[i][j] = map[i][j].toDrawable();
             }
         }
 
