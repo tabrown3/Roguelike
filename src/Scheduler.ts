@@ -1,17 +1,26 @@
 import IScheduler from './IScheduler';
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
+import { TYPES } from './types';
+import IEventHandler from './IEventHandler';
+import Being from './Being';
 
 @injectable()
 export default class Scheduler implements IScheduler {
 
-    public onKeyPress = (gen: () => IterableIterator<void>): void => {
+    constructor(
+        @inject(TYPES.EventHandler) private eventHandler: IEventHandler) {
 
-        let iterator = gen();
-        iterator.next();
-
-        window.addEventListener("keydown", (ev) => {
-
-            iterator.next(ev.key);
-        });
     }
+
+    addWorldTickListener = (iterator: IterableIterator<void>): void => {
+
+        //this.eventHandler.addKeyDownListener(iterator); // TODO: this shouldn't be a pass through, need actual scheduling
+
+        // iterator.next();
+
+        // setInterval(() => {
+        //     iterator.next();
+        // }, 200);
+    }
+    
 }

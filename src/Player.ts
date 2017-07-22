@@ -1,4 +1,4 @@
-import { IEventHandler } from './IEventHandler';
+import IEventHandler from './IEventHandler';
 import Vec2 from './common/Vec2';
 import { injectable, inject } from "inversify";
 import Color from './common/Color';
@@ -20,7 +20,7 @@ export class Player {
 
     constructor(
         @inject(TYPES.WorldManager) private worldManager: IWorldManager,
-        @inject(TYPES.Scheduler) private scheduler: IScheduler) {
+        @inject(TYPES.EventHandler) private eventHandler: IEventHandler) {
 
         this.being = new Being(
             "@",
@@ -36,14 +36,14 @@ export class Player {
         this.worldManager.initEntity(this.being);
 
         let _this = this;
-        this.scheduler.onKeyPress(function* (): IterableIterator<void> {
+        this.eventHandler.addKeyDownListener((function* (): IterableIterator<void> {
 
             while (true) {
 
                 _this.act(yield);
             }
 
-        });
+        })());
     }
 
     public act = (char: string) => {
@@ -84,7 +84,7 @@ export class Player {
 
         let response = this.worldManager.requestAction(request);
 
-        if (response.type === PermissionType.Granted) {
+        if (response && response.type === PermissionType.Granted) {
             this.being.setPosLocal(attemptLocalPos);
             this.worldManager.commitAction(request);
         }

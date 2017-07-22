@@ -8,11 +8,20 @@ import Vec2 from './../common/Vec2';
 import WorldMap from './WorldMap';
 import WorldSpot from './WorldSpot';
 import Entity from '../Entity';
+import { TYPES } from '../types';
+import IWorldMap from './IWorldMap';
+import IDrawable from '../display/IDrawable';
+
 
 @injectable()
 export default class WorldManager implements IWorldManager {
 
-    private readonly worldMap: WorldMap = new WorldMap(); // TODO: inject this
+    //private readonly worldMap: WorldMap = new WorldMap(); // TODO: inject this
+
+    constructor(
+        @inject(TYPES.WorldMap) private worldMap: IWorldMap) {
+
+    }
 
     public requestAction = (request: ActionRequest): ActionPermission => {
 
@@ -46,7 +55,7 @@ export default class WorldManager implements IWorldManager {
         this.worldMap.setEntity(entity, entity.getPos());
     }
 
-    public getWorldMap = (): WorldSpot[][] => {
+    public getWorldMap = (): IDrawable[][] => {
         return this.worldMap.getMap();
     }
 

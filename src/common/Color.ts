@@ -7,4 +7,8 @@ export default class Color {
     public getFull = () => {
         return "#"+this.r+this.g+this.b;
     }
+
+    public static get black(): Color {
+        return new Color("0", "0", "0")
+    }
 }

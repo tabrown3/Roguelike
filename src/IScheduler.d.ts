@@ -1,4 +1,5 @@
-export default interface IScheduler {
+import Being from './Being';
 
-    onKeyPress: (gen: () => IterableIterator<void>) => void;
+export default interface IScheduler {
+    addWorldTickListener: (iterator: IterableIterator<void>) => void;
 }

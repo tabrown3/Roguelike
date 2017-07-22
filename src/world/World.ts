@@ -2,17 +2,7 @@ import { IWorld } from './IWorld';
 import { Player } from '../Player';
 import { injectable, inject } from "inversify";
 import { TYPES } from '../types';
-import Vec2 from './../common/Vec2';
-import InspectionResult from '../InspectionResult';
-import WorldMap from './WorldMap';
-import Entity from '../Entity';
-import ActionRequest from './ActionRequest';
-import ActionPermission from './ActionPermission';
-import { ActionType } from './ActionType';
-import Fixture from '../Fixture';
-import { PermissionType } from './PermissionType';
-import Being from '../Being';
-import IWorldManager from './WorldManager';
+import IWorldManager from './IWorldManager';
 import IDrawable from '../display/IDrawable';
 
 @injectable()
@@ -25,21 +15,8 @@ export class World implements IWorld {
 
     public getView = (): IDrawable[][] => {
         
-        let outArr: IDrawable[][] = [];
         let map = this.worldManager.getWorldMap();
 
-        for(let i = 0; i < 80; i++) {
-            outArr[i] = [];
-            for(let j = 0; j < 25; j++) {
-                outArr[i][j] = map[i][j].toDrawable();
-            }
-        }
-
-        return outArr;
-    }
-
-    public update = (): void => {
-        // this.player.update();
-        // TODO: everything else updates here?
+        return map;
     }
 }

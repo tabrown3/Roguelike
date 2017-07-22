@@ -12,10 +12,7 @@ export class Game {
     }
 
     public start = () => {
-        // setInterval(() => {
-        //     this.world.update();
-        // }, 200);
-
+        
         let renderLoop = (timeStamp: number) => {
             this.viewEngine.renderWorld(this.world);
             window.requestAnimationFrame(renderLoop); // call render loop recursively

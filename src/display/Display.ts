@@ -16,6 +16,7 @@ export class Display implements IDisplay {
     public getDisplay = (): any => {
 
         if(!this.display) {
+            ROT.Display.Rect.cache = true;
             this.display = new ROT.Display({ width: VIEW_DIMS.X, height: VIEW_DIMS.Y });
             document.body.appendChild(this.display.getContainer());
         }
