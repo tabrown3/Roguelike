@@ -25,7 +25,7 @@ export class Player {
         this.being = new Being(
             "@",
             new Color("0", "0", "0"),
-            new Color("F", "F", "F"),
+            new Color("F", "F", "F")
         );
 
         this.init();
@@ -40,13 +40,13 @@ export class Player {
 
             while (true) {
 
-                _this.update(yield);
+                _this.act(yield);
             }
 
         });
     }
 
-    public update = (char: string) => {
+    public act = (char: string) => {
 
         let attemptLocalPos: Vec2;
 
