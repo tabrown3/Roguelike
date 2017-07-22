@@ -1,6 +1,5 @@
 import { IWorld } from './IWorld';
 import { Player } from '../Player';
-import { IEventHandler } from '../IEventHandler';
 import { injectable, inject } from "inversify";
 import { TYPES } from '../types';
 import Vec2 from './../common/Vec2';
@@ -21,7 +20,6 @@ export class World implements IWorld {
 
     constructor(
         @inject(TYPES.Player) private player: Player,
-        @inject(TYPES.EventHandler) private eventHandler: IEventHandler,
         @inject(TYPES.WorldManager) private worldManager: IWorldManager) {
     }
 
@@ -41,7 +39,7 @@ export class World implements IWorld {
     }
 
     public update = (): void => {
-        this.player.update(this.eventHandler);
+        // this.player.update();
         // TODO: everything else updates here?
     }
 }

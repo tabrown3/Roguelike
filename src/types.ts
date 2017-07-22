@@ -5,7 +5,8 @@ let TYPES = {
     EventHandler: Symbol("EventHandler"),
     ViewEngine: Symbol("ViewEngine"),
     Display: Symbol("Display"),
-    WorldManager: Symbol("WorldManager")
+    WorldManager: Symbol("WorldManager"),
+    Scheduler: Symbol("Scheduler")
 };
 
 export { TYPES }

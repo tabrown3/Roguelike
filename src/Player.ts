@@ -11,6 +11,7 @@ import { ActionType } from './world/ActionType';
 import { PermissionType } from './world/PermissionType';
 import IWorldManager from './world/IWorldManager';
 import { TYPES } from './types';
+import IScheduler from './IScheduler';
 
 @injectable()
 export class Player {
@@ -18,7 +19,8 @@ export class Player {
     public readonly being: Being;
 
     constructor(
-        @inject(TYPES.WorldManager) private worldManager: IWorldManager) {
+        @inject(TYPES.WorldManager) private worldManager: IWorldManager,
+        @inject(TYPES.Scheduler) private scheduler: IScheduler) {
 
         this.being = new Being(
             "@",
@@ -26,14 +28,29 @@ export class Player {
             new Color("F", "F", "F"),
         );
 
-        this.worldManager.initEntity(this.being);
+        this.init();
     }
 
-    public update = (eventHandler: IEventHandler) => {
+    private init = () => {
+
+        this.worldManager.initEntity(this.being);
+
+        let _this = this;
+        this.scheduler.onKeyPress(function* (): IterableIterator<void> {
+
+            while (true) {
+
+                _this.update(yield);
+            }
+
+        });
+    }
+
+    public update = (char: string) => {
 
         let attemptLocalPos: Vec2;
 
-        switch(eventHandler.getLastMove()) {
+        switch (char) {
             case "w":
                 attemptLocalPos = new Vec2(0, -1);
                 break;
