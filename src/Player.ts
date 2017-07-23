@@ -11,7 +11,6 @@ import { ActionType } from './world/ActionType';
 import { PermissionType } from './world/PermissionType';
 import IWorldManager from './world/IWorldManager';
 import { TYPES } from './types';
-import IScheduler from './IScheduler';
 
 @injectable()
 export class Player {
@@ -20,8 +19,7 @@ export class Player {
 
     constructor(
         @inject(TYPES.WorldManager) private worldManager: IWorldManager,
-        @inject(TYPES.EventHandler) private eventHandler: IEventHandler,
-        @inject(TYPES.Scheduler) private scheduler: IScheduler) {
+        @inject(TYPES.EventHandler) private eventHandler: IEventHandler) {
 
         this.being = new Being(
             "@",
@@ -70,7 +68,7 @@ export class Player {
         if (attemptLocalPos) {
 
             this.attemptMove(attemptLocalPos);
-            this.scheduler.executeWorldTick(this.being);
+            this.eventHandler.publishPlayerAction(this.being);
         }
     }
 

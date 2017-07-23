@@ -6,12 +6,11 @@ import Color from '../common/Color';
 import Level from './level/Level';
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../types';
-import IScheduler from '../IScheduler';
 import IWorldMap from './IWorldMap';
 import LevelData from './level/LevelData';
 import IDrawable from '../display/IDrawable';
 import Being from '../Being';
-
+import IEventHandler from '../IEventHandler';
 
 @injectable()
 export default class WorldMap implements IWorldMap {
@@ -19,13 +18,13 @@ export default class WorldMap implements IWorldMap {
     private currentLevel: Level;
 
     constructor(
-        @inject(TYPES.Scheduler) private scheduler: IScheduler) {
+        @inject(TYPES.EventHandler) private eventHandler: IEventHandler) {
 
         let initLevelData = this.loadLevelData("maru_entrance"); // TODO: replace with actual level loading service
 
         this.currentLevel = new Level(initLevelData);
 
-        scheduler.addWorldTickListener(this.worldTick());
+        eventHandler.addPlayerActionListener(this.getPlayerActionListener());
     }
 
     public getMap = (): IDrawable[][] => {
@@ -51,7 +50,7 @@ export default class WorldMap implements IWorldMap {
         if (ind > -1) fromSpot.entities.splice(ind, 1);
     }
 
-    private worldTick = (): IterableIterator<void> => {
+    private getPlayerActionListener = (): IterableIterator<void> => {
 
         let _this = this;
 
@@ -59,7 +58,8 @@ export default class WorldMap implements IWorldMap {
 
             while(true) {
 
-                let playerPos: Vec2 = yield;
+                let playerBeing: Being = yield;
+                let playerPos: Vec2 = playerBeing.getPos();
 
                 console.log(playerPos);
 
@@ -92,7 +92,7 @@ export default class WorldMap implements IWorldMap {
 
         return {
             worldSpots: initWorldSpots,
-            name: "maru_entrance",
+            name: name,
             scenes: [],
             currentScene: null,
             adjacentLevels: []
