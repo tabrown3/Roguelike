@@ -44,7 +44,7 @@ export default class WorldManager implements IWorldManager {
     public commitAction = (request: ActionRequest): void => {
 
         if(request.type == ActionType.Move) {
-
+            // TODO: consider updating world tick at this point
             this.worldMap.removeEntity(request.requestor);
             this.worldMap.setEntity(request.requestor, request.pos);
         }

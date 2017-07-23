@@ -10,6 +10,7 @@ import IScheduler from '../IScheduler';
 import IWorldMap from './IWorldMap';
 import LevelData from './level/LevelData';
 import IDrawable from '../display/IDrawable';
+import Being from '../Being';
 
 
 @injectable()
@@ -59,6 +60,8 @@ export default class WorldMap implements IWorldMap {
             while(true) {
 
                 let playerPos: Vec2 = yield;
+
+                console.log(playerPos);
 
                 let levelTransition = _this.currentLevel.checkForTransition(playerPos);
                 if(levelTransition)

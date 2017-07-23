@@ -20,7 +20,8 @@ export class Player {
 
     constructor(
         @inject(TYPES.WorldManager) private worldManager: IWorldManager,
-        @inject(TYPES.EventHandler) private eventHandler: IEventHandler) {
+        @inject(TYPES.EventHandler) private eventHandler: IEventHandler,
+        @inject(TYPES.Scheduler) private scheduler: IScheduler) {
 
         this.being = new Being(
             "@",
@@ -69,6 +70,7 @@ export class Player {
         if (attemptLocalPos) {
 
             this.attemptMove(attemptLocalPos);
+            this.scheduler.executeWorldTick(this.being);
         }
     }
 

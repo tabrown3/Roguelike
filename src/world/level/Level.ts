@@ -22,17 +22,20 @@ export default class Level implements ITransitionable<string> {
         let testScene2 = new Scene("antechamber", new Vec2(5, 5), []);
 
         let testTransition1 = {
-            transitionAt: new Vec2(1, 2),
+            transitionAt: new Vec2(6, 6),
             node: testScene2
         };
 
         let testTransition2 = {
-            transitionAt: new Vec2(1, 2),
+            transitionAt: new Vec2(5, 5),
             node: testScene1
         };
 
         this.scenes.push(testScene1);
         this.scenes.push(testScene2);
+
+        testScene1.transitions.push(testTransition1);
+        testScene2.transitions.push(testTransition2);
 
         // TODO: replace with LevelData.currentScene (defaultScene?)
         this.currentScene = testScene1;
