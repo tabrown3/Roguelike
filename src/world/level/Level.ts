@@ -7,38 +7,55 @@ import Vec2 from '../../common/Vec2';
 import IDrawable from '../../display/IDrawable';
 import Color from '../../common/Color';
 import { VIEW_DIMS } from '../../worldConfig';
+import SceneData from './SceneData';
 
 export default class Level implements ITransitionable<string> {
 
-    constructor(data: LevelData) {
+    constructor(data?: Level | LevelData) {
 
-        this.worldSpots = data.worldSpots;
-        this.name = data.name;
-        this.scenes = data.scenes;
-        this.adjacentLevels = data.adjacentLevels;
+        if(data) {
 
-        // TODO: REMOVE TEST CODE
-        let testScene1 = new Scene("entrance", new Vec2(-10, -5), []);
-        let testScene2 = new Scene("antechamber", new Vec2(5, 5), []);
+            let inLevel = data;
 
-        let testTransition1 = {
-            transitionAt: new Vec2(6, 6),
-            node: testScene2
-        };
+            if (!(inLevel instanceof Level))
+                inLevel = Level.fromLevelData(inLevel);
 
-        let testTransition2 = {
-            transitionAt: new Vec2(5, 5),
-            node: testScene1
-        };
+            this.worldSpots = inLevel.worldSpots;
+            this.name = inLevel.name;
+            this.scenes = inLevel.scenes;
+            this.adjacentLevels = inLevel.adjacentLevels;
+            this.defaultScene = inLevel.defaultScene;
+            this.currentScene = inLevel.currentScene || inLevel.defaultScene;
+        }
 
-        this.scenes.push(testScene1);
-        this.scenes.push(testScene2);
+        // this.worldSpots = data.worldSpots;
+        // this.name = data.name;
+        // this.scenes = data.scenes;
+        // this.adjacentLevels = data.adjacentLevels;
+        // this.defaultScene = data.defaultScene;
 
-        testScene1.transitions.push(testTransition1);
-        testScene2.transitions.push(testTransition2);
+        // // TODO: REMOVE TEST CODE
+        // let testScene1 = new Scene("entrance", new Vec2(-10, -5), []);
+        // let testScene2 = new Scene("antechamber", new Vec2(5, 5), []);
 
-        // TODO: replace with LevelData.currentScene (defaultScene?)
-        this.currentScene = testScene1;
+        // let testTransition1 = {
+        //     transitionAt: new Vec2(6, 6),
+        //     node: testScene2
+        // };
+
+        // let testTransition2 = {
+        //     transitionAt: new Vec2(5, 5),
+        //     node: testScene1
+        // };
+
+        // this.scenes.push(testScene1);
+        // this.scenes.push(testScene2);
+
+        // testScene1.transitions.push(testTransition1);
+        // testScene2.transitions.push(testTransition2);
+
+        // // TODO: replace with LevelData.currentScene (defaultScene?)
+        // this.currentScene = testScene1;
     }
 
     public worldSpots: WorldSpot[][];
@@ -46,6 +63,7 @@ export default class Level implements ITransitionable<string> {
     private scenes: Scene[];
     private currentScene: Scene;
     private adjacentLevels: Transition<string>[];
+    private defaultScene: Scene;
 
     public checkForTransition = (pos: Vec2): Transition<string> => {
 
@@ -81,6 +99,51 @@ export default class Level implements ITransitionable<string> {
         }
 
         return outArr;
+    }
+
+    public toLevelData = (): LevelData => {
+
+        let sceneDataArr: SceneData[] = this.scenes.map(elem => elem.toSceneData())
+
+        return {
+            worldSpots: this.worldSpots,
+            name: this.name,
+            scenes: sceneDataArr,
+            defaultScene: this.defaultScene.toSceneData(),
+            adjacentLevels: this.adjacentLevels
+        };
+    }
+
+    public static fromLevelData = (data: LevelData): Level => {
+        let outLevel: Level = new Level();
+        outLevel.name = data.name;
+        outLevel.adjacentLevels = data.adjacentLevels;
+        outLevel.scenes = Level.getScenesFromSceneData(data.scenes);
+        outLevel.defaultScene = outLevel.scenes.find(scene => scene.name === data.defaultScene.name);
+        outLevel.currentScene = outLevel.defaultScene;
+        //outLevel.worldSpots = data.worldSpots; // TODO: make sure worldSpots serialize correctly, etc
+
+        throw new TypeError("not finished");
+    }
+
+    private static getScenesFromSceneData = (sceneDatas: SceneData[]): Scene[] => {
+
+        let outScenes = sceneDatas.map(elem => new Scene(elem.name, elem.camOrigin, []));
+
+        for(let outScene of outScenes) {
+            
+            let matchingSceneData = sceneDatas.find(data => data.name === outScene.name);
+
+            for(let tran of matchingSceneData.transitions) {
+
+                outScene.transitions.push({
+                    node: outScenes.find(scene => scene.name === tran.node),
+                    transitionAt:tran.transitionAt
+                });
+            }
+        }
+
+        return outScenes;
     }
 
     private blackDrawable: IDrawable = {

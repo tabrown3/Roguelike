@@ -94,7 +94,7 @@ export default class WorldMap implements IWorldMap {
             worldSpots: initWorldSpots,
             name: name,
             scenes: [],
-            currentScene: null,
+            defaultScene: null,
             adjacentLevels: []
         };
     }
