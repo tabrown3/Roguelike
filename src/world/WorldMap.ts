@@ -11,6 +11,7 @@ import LevelData from './level/LevelData';
 import IDrawable from '../display/IDrawable';
 import Being from '../Being';
 import IEventHandler from '../IEventHandler';
+import Scene from './level/Scene';
 
 @injectable()
 export default class WorldMap implements IWorldMap {
@@ -90,12 +91,35 @@ export default class WorldMap implements IWorldMap {
             }
         }
 
-        return {
+        let outData: LevelData = {
             worldSpots: initWorldSpots,
             name: name,
             scenes: [],
             defaultScene: null,
             adjacentLevels: []
         };
+
+        let testScene1 = new Scene("entrance", new Vec2(-10, -5), []);
+        let testScene2 = new Scene("antechamber", new Vec2(5, 5), []);
+
+        let testTransition1 = {
+            transitionAt: new Vec2(6, 6),
+            node: testScene2
+        };
+
+        let testTransition2 = {
+            transitionAt: new Vec2(5, 5),
+            node: testScene1
+        };
+
+        testScene1.transitions.push(testTransition1);
+        testScene2.transitions.push(testTransition2);
+
+        outData.scenes.push(testScene1.toSceneData());
+        outData.scenes.push(testScene2.toSceneData());
+
+        outData.defaultScene = testScene1.toSceneData();
+
+        return outData;
     }
 }

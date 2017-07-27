@@ -33,9 +33,10 @@ export default class Scene implements ITranstionable<Scene> {
 
         for(let tran of this.transitions) {
             
-            let outTran: Transition<string>;
-            outTran.transitionAt = tran.transitionAt;
-            outTran.node = tran.node.name;
+            let outTran: Transition<string> = {
+                transitionAt: tran.transitionAt,
+                node: tran.node.name
+            };
 
             outTransitions.push(outTran);
         }

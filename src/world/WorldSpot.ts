@@ -3,6 +3,7 @@ import Being from './../Being';
 import Fixture from './../Fixture';
 import IDrawable from '../display/IDrawable';
 import Terrain from './Terrain';
+import WorldSpotData from './WorldSpotData';
 
 export default class WorldSpot {
 
@@ -44,5 +45,15 @@ export default class WorldSpot {
             return this.entities[0];
         else
             return this.terrain;
+    }
+
+    public toWorldSpotData = (): WorldSpotData => {
+        return {
+            terrain: this.terrain.toTerrainData()
+        }
+    }
+
+    public static fromWorldSpotData = (data: WorldSpotData) => {
+        return new WorldSpot([], Terrain.fromTerrainData(data.terrain));
     }
 }

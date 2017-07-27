@@ -8,6 +8,7 @@ import IDrawable from '../../display/IDrawable';
 import Color from '../../common/Color';
 import { VIEW_DIMS } from '../../worldConfig';
 import SceneData from './SceneData';
+import WorldSpotData from '../WorldSpotData';
 
 export default class Level implements ITransitionable<string> {
 
@@ -34,7 +35,7 @@ export default class Level implements ITransitionable<string> {
         // this.adjacentLevels = data.adjacentLevels;
         // this.defaultScene = data.defaultScene;
 
-        // // TODO: REMOVE TEST CODE
+        // TODO: REMOVE TEST CODE
         // let testScene1 = new Scene("entrance", new Vec2(-10, -5), []);
         // let testScene2 = new Scene("antechamber", new Vec2(5, 5), []);
 
@@ -105,6 +106,15 @@ export default class Level implements ITransitionable<string> {
 
         let sceneDataArr: SceneData[] = this.scenes.map(elem => elem.toSceneData())
 
+        let outWorldSpots: WorldSpotData[][] = [];
+        for (let [i, spotCol] of this.worldSpots.entries()) {
+            outWorldSpots.push([]);
+
+            for (let [j, spot] of spotCol.entries()) {
+                outWorldSpots[i][j] = spot.toWorldSpotData();
+            }
+        }
+
         return {
             worldSpots: this.worldSpots,
             name: this.name,
@@ -121,9 +131,20 @@ export default class Level implements ITransitionable<string> {
         outLevel.scenes = Level.getScenesFromSceneData(data.scenes);
         outLevel.defaultScene = outLevel.scenes.find(scene => scene.name === data.defaultScene.name);
         outLevel.currentScene = outLevel.defaultScene;
-        //outLevel.worldSpots = data.worldSpots; // TODO: make sure worldSpots serialize correctly, etc
 
-        throw new TypeError("not finished");
+        let outWorldSpots: WorldSpot[][] = [];
+        for(let [i, spotCol] of data.worldSpots.entries()) {
+            outWorldSpots.push([]);
+
+            for(let [j, spot] of spotCol.entries()) {
+                outWorldSpots[i][j] = WorldSpot.fromWorldSpotData(spot);
+            }
+        }
+
+        outLevel.worldSpots = outWorldSpots; // TODO: make sure worldSpots serialize correctly, etc
+
+        //throw new TypeError("not finished");
+        return outLevel;
     }
 
     private static getScenesFromSceneData = (sceneDatas: SceneData[]): Scene[] => {
