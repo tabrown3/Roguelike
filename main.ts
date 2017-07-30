@@ -2,7 +2,7 @@ import { Game } from './src/Game';
 import { container } from './src/container';
 import { TYPES } from './src/types';
 
-window.onload = (function() {
+//window.onload = (function() {
 
     //let world = new World(new Player(), new EventHandler());
 
@@ -23,4 +23,4 @@ window.onload = (function() {
     // display.draw(9,  6, "╝");
     // display.draw(8,  6, "§");
     // display.draw(6,  6, "§");
-});
+//});

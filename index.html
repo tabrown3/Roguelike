@@ -4,6 +4,11 @@
     </head>
     <body>
         <div id="game-canvas"></div>
-        <script src="/bundle.js"></script>
+        <!-- <script src="/bundle.js"></script> -->
+        <script src="./node_modules/systemjs/dist/system.js"></script>
+        <script src="./systemjs.config.js"></script>
+        <script>
+            SystemJS.import('./main.js');
+        </script>
     </body>
 </html>

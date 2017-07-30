@@ -11,5 +11,6 @@
     "files.autoSave": "afterDelay",
     "editor.wordWrap": "on",
     "editor.wrappingIndent": "indent",
-    "editor.formatOnPaste": true
+    "editor.formatOnPaste": true,
+    "typescript.tsdk": "./node_modules/@types"
 }
