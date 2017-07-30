@@ -4,8 +4,14 @@ node_modules/
 # Typescript v1 declaration files
 typings/
 
-*.js.map
-*.js
+test/**/*.js.map
+test/**/*.js
+
+src/**/*.js.map
+src/**/*.js
+
+main.js
+main.js.map
 
 scripts
 npm-debug.log

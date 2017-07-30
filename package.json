@@ -28,8 +28,10 @@
   },
   "dependencies": {
     "@types/jasmine": "^2.5.53",
+    "es6-module-loader": "^0.17.11",
     "inversify": "^4.2.0",
+    "karma-systemjs": "^0.16.0",
     "reflect-metadata": "^0.1.10",
-    "systemjs": "^0.20.17"
+    "systemjs": "^0.19.47"
   }
 }

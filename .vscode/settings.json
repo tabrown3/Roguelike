@@ -5,7 +5,9 @@
         "main.js": true,
         "main.js.map": true,
         "src/**/*.js": true,
-        "src/**/*.map": true
+        "src/**/*.map": true,
+        "test/**/*.js": true,
+        "test/**/*.map": true
     },
     // Controls auto save of dirty files. Accepted values:  "off", "afterDelay", "onFocusChange". If set to "afterDelay" you can configure the delay in "files.autoSaveDelay".
     "files.autoSave": "afterDelay",
