@@ -50,7 +50,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_ERROR,
 
 
     // enable / disable watching file and executing tests whenever any file changes
@@ -64,7 +64,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: true,
 
     // Concurrency level
     // how many browser should be started simultaneous
@@ -77,9 +77,12 @@ module.exports = function(config) {
 
       // Patterns for files that you want Karma to make available, but not loaded until a module requests them. eg. Third-party libraries.
       serveFiles: [
-        'test/*.test.js',
-        'test/*.test.ts',
-        'test/*.map'
+        'test/**/*.test.js',
+        'test/**/*.test.ts',
+        'test/**/*.map',
+        'src/**/*.js',
+        'src/**/*.ts',
+        'src/**/*.map'
       ],
 
       // SystemJS configuration specifically for tests, added after your config file.

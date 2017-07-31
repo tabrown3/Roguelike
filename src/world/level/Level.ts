@@ -28,35 +28,6 @@ export default class Level implements ITransitionable<string> {
             this.defaultScene = inLevel.defaultScene;
             this.currentScene = inLevel.currentScene || inLevel.defaultScene;
         }
-
-        // this.worldSpots = data.worldSpots;
-        // this.name = data.name;
-        // this.scenes = data.scenes;
-        // this.adjacentLevels = data.adjacentLevels;
-        // this.defaultScene = data.defaultScene;
-
-        // TODO: REMOVE TEST CODE
-        // let testScene1 = new Scene("entrance", new Vec2(-10, -5), []);
-        // let testScene2 = new Scene("antechamber", new Vec2(5, 5), []);
-
-        // let testTransition1 = {
-        //     transitionAt: new Vec2(6, 6),
-        //     node: testScene2
-        // };
-
-        // let testTransition2 = {
-        //     transitionAt: new Vec2(5, 5),
-        //     node: testScene1
-        // };
-
-        // this.scenes.push(testScene1);
-        // this.scenes.push(testScene2);
-
-        // testScene1.transitions.push(testTransition1);
-        // testScene2.transitions.push(testTransition2);
-
-        // // TODO: replace with LevelData.currentScene (defaultScene?)
-        // this.currentScene = testScene1;
     }
 
     public worldSpots: WorldSpot[][];
@@ -143,7 +114,6 @@ export default class Level implements ITransitionable<string> {
 
         outLevel.worldSpots = outWorldSpots; // TODO: make sure worldSpots serialize correctly, etc
 
-        //throw new TypeError("not finished");
         return outLevel;
     }
 
@@ -159,7 +129,7 @@ export default class Level implements ITransitionable<string> {
 
                 outScene.transitions.push({
                     node: outScenes.find(scene => scene.name === tran.node),
-                    transitionAt:tran.transitionAt
+                    transitionAt: tran.transitionAt
                 });
             }
         }
@@ -173,7 +143,7 @@ export default class Level implements ITransitionable<string> {
         icon: " " // empty space
     };
 
-    private outOfBounds = (x: number, y: number) => {
+    public outOfBounds = (x: number, y: number) => {
 
         return x < 0 || x >= this.worldSpots.length || y < 0 || y >= this.worldSpots[0].length;
     }

@@ -7,7 +7,8 @@
     "build": {
       "patterns": [
         "main.ts",
-        "src"
+        "src",
+        "test"
       ],
       "extensions": "ts"
     }
