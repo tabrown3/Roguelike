@@ -1,3 +1,4 @@
+import Vec2Data from './Vec2Data';
 import IComparable from './IComparable';
 
 export default class Vec2 implements IComparable<Vec2> {
@@ -12,5 +13,18 @@ export default class Vec2 implements IComparable<Vec2> {
 
     public equals = (vec: Vec2): boolean => {
         return this.x === vec.x && this.y === vec.y;
+    }
+
+    public static fromVec2Data(data: Vec2Data) {
+
+        return new Vec2(data.x, data.y);
+    }
+
+    public toVec2Data = (): Vec2Data => {
+
+        return {
+            x: this.x,
+            y: this.y
+        };
     }
 }

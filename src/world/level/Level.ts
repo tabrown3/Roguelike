@@ -117,7 +117,7 @@ export default class Level implements ITransitionable<string> {
         return outLevel;
     }
 
-    private static getScenesFromSceneData = (sceneDatas: SceneData[]): Scene[] => {
+    public static getScenesFromSceneData = (sceneDatas: SceneData[]): Scene[] => {
 
         let outScenes = sceneDatas.map(elem => new Scene(elem.name, elem.camOrigin, []));
 
