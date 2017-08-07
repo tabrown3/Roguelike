@@ -12,6 +12,7 @@ import IDrawable from '../display/IDrawable';
 import Being from '../Being';
 import IEventHandler from '../IEventHandler';
 import Scene from './level/Scene';
+import WorldSpotData from './WorldSpotData';
 
 @injectable()
 export default class WorldMap implements IWorldMap {
@@ -75,24 +76,26 @@ export default class WorldMap implements IWorldMap {
 
     private loadLevelData = (name: string): LevelData => {
         
-        let initWorldSpots: WorldSpot[][] = [];
+        // let initWorldSpots: WorldSpot[][] = [];
+        let initWorldSpotDatas: WorldSpotData[][] = [];
 
         for (let i = 0; i < 80; i++) { // TODO: replace this with logic to generate init LevelData
-            initWorldSpots[i] = [];
+            initWorldSpotDatas[i] = [];
 
             for (let j = 0; j < 25; j++) {
-                initWorldSpots[i][j] = new WorldSpot([],
-                    new Terrain({
+                initWorldSpotDatas[i][j] = {
+                    terrain: {
                         icon: ".",
-                        colorFore: new Color("F", "F", "F"),
-                        colorBack: new Color("0", "0", "0")
-                    }, true)
-                )
+                        colorFore: {r: "F", g: "F", b: "F"},
+                        colorBack: { r: "0", g: "0", b: "0"},
+                        navigable: true
+                    }
+                };
             }
         }
 
         let outData: LevelData = {
-            worldSpots: initWorldSpots,
+            worldSpots: initWorldSpotDatas,
             name: name,
             scenes: [],
             defaultScene: null,
