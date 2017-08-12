@@ -7,7 +7,8 @@ let TYPES = {
     Display: Symbol("Display"),
     WorldManager: Symbol("WorldManager"),
     Scheduler: Symbol("Scheduler"),
-    WorldMap: Symbol("WorldMap")
+    WorldMap: Symbol("WorldMap"),
+    GameStateManager: Symbol("GameStateManager")
 };
 
 export { TYPES }

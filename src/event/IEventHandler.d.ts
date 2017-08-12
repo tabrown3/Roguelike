@@ -1,4 +1,4 @@
-import Being from './Being';
+import Being from './../Being';
 
 export default interface IEventHandler {
     addKeyDownListener: (iterator: IterableIterator<void>) => void;

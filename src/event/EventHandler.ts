@@ -1,7 +1,7 @@
-import IEventHandler from './IEventHandler';
+import IEventHandler from './../event/IEventHandler';
 import { injectable } from "inversify";
-import Being from './Being';
-import { GAME_LOOP_INTERVAL } from './worldConfig';
+import Being from './../Being';
+import { GAME_LOOP_INTERVAL } from './../worldConfig';
 
 @injectable()
 export class EventHandler implements IEventHandler {

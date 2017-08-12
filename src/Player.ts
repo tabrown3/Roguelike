@@ -1,4 +1,4 @@
-import IEventHandler from './IEventHandler';
+import IEventHandler from './event/IEventHandler';
 import Vec2 from './common/Vec2';
 import { injectable, inject } from "inversify";
 import Color from './common/Color';

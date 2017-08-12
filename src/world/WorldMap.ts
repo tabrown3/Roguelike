@@ -10,7 +10,7 @@ import IWorldMap from './IWorldMap';
 import LevelData from './level/LevelData';
 import IDrawable from '../display/IDrawable';
 import Being from '../Being';
-import IEventHandler from '../IEventHandler';
+import IEventHandler from '../event/IEventHandler';
 import Scene from './level/Scene';
 import WorldSpotData from './WorldSpotData';
 
