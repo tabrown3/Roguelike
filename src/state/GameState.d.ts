@@ -1,8 +1,9 @@
-import IEventHandler from '../event/IEventHandler';
+import IGameEventHandler from '../event/IGameEventHandler';
 import { StateType } from './StateType';
+import GameEventHubs from '../event/GameEventHubs'
 
 export default interface GameState {
 
-    eventHandler: IEventHandler;
     stateType: StateType;
+    gameEventHubs: GameEventHubs;
 }

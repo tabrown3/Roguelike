@@ -1,4 +1,4 @@
-import IEventHandler from './event/IEventHandler';
+import IGameEventHandler from './event/IGameEventHandler';
 import Vec2 from './common/Vec2';
 import { injectable, inject } from "inversify";
 import Color from './common/Color';
@@ -11,6 +11,7 @@ import { ActionType } from './world/ActionType';
 import { PermissionType } from './world/PermissionType';
 import IWorldManager from './world/IWorldManager';
 import { TYPES } from './types';
+import GameStateManager from './state/GameStateManager';
 
 @injectable()
 export class Player {
@@ -19,7 +20,7 @@ export class Player {
 
     constructor(
         @inject(TYPES.WorldManager) private worldManager: IWorldManager,
-        @inject(TYPES.EventHandler) private eventHandler: IEventHandler) {
+        @inject(TYPES.GameStateManager) private gameStateManager: GameStateManager) {
 
         this.being = new Being(
             "@",
@@ -35,19 +36,25 @@ export class Player {
         this.worldManager.initEntity(this.being);
 
         let _this = this;
-        this.eventHandler.addKeyDownListener((function* (): IterableIterator<void> {
+
+        let listenerIterator = (function* (): IterableIterator<void> {
 
             while (true) {
 
                 _this.act(yield);
             }
 
-        })());
+        })();
+
+        listenerIterator.next();
+
+        this.gameStateManager.overworld.navigationSubState.gameEventHubs.keyDownHub.addListener(listenerIterator);
     }
 
-    public act = (char: string) => {
+    public act = (keyDownEvent: any) => {
 
         let attemptLocalPos: Vec2;
+        let char = keyDownEvent.key;
 
         switch (char) {
             case "w":
@@ -68,7 +75,7 @@ export class Player {
         if (attemptLocalPos) {
 
             this.attemptMove(attemptLocalPos);
-            this.eventHandler.publishPlayerAction(this.being);
+            this.gameStateManager.overworld.navigationSubState.playerActionHub.publishEvent(this.being);
         }
     }
 

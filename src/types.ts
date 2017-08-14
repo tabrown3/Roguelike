@@ -2,7 +2,7 @@ let TYPES = {
     World: Symbol("World"),
     Player: Symbol("Player"),
     Game: Symbol("Game"),
-    EventHandler: Symbol("EventHandler"),
+    GameEventHandler: Symbol("GameEventHandler"),
     ViewEngine: Symbol("ViewEngine"),
     Display: Symbol("Display"),
     WorldManager: Symbol("WorldManager"),

@@ -12,6 +12,7 @@
     "types": [
       "reflect-metadata",
       "jasmine"
-    ]
+    ],
+    "allowUnreachableCode": false
   }
 }

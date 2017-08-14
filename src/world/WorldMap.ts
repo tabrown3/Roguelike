@@ -10,9 +10,10 @@ import IWorldMap from './IWorldMap';
 import LevelData from './level/LevelData';
 import IDrawable from '../display/IDrawable';
 import Being from '../Being';
-import IEventHandler from '../event/IEventHandler';
+import IGameEventHandler from '../event/IGameEventHandler';
 import Scene from './level/Scene';
 import WorldSpotData from './WorldSpotData';
+import GameStateManager from './../state/GameStateManager';
 
 @injectable()
 export default class WorldMap implements IWorldMap {
@@ -20,13 +21,13 @@ export default class WorldMap implements IWorldMap {
     private currentLevel: Level;
 
     constructor(
-        @inject(TYPES.EventHandler) private eventHandler: IEventHandler) {
+        @inject(TYPES.GameStateManager) private gameStateManager: GameStateManager) {
 
         let initLevelData = this.loadLevelData("maru_entrance"); // TODO: replace with actual level loading service
 
         this.currentLevel = new Level(initLevelData);
 
-        eventHandler.addPlayerActionListener(this.getPlayerActionListener());
+        this.gameStateManager.overworld.navigationSubState.playerActionHub.addListener(this.getPlayerActionListener());
     }
 
     public getMap = (): IDrawable[][] => {
@@ -56,9 +57,9 @@ export default class WorldMap implements IWorldMap {
 
         let _this = this;
 
-        return (function* (): IterableIterator<void> {
+        let outIterator = (function* (): IterableIterator<void> {
 
-            while(true) {
+            while (true) {
 
                 let playerBeing: Being = yield;
                 let playerPos: Vec2 = playerBeing.getPos();
@@ -66,12 +67,16 @@ export default class WorldMap implements IWorldMap {
                 console.log(playerPos);
 
                 let levelTransition = _this.currentLevel.checkForTransition(playerPos);
-                if(levelTransition)
+                if (levelTransition)
                     _this.loadLevelData(levelTransition.node);
                 else
                     _this.currentLevel.update(playerPos);
             }
         })();
+
+        outIterator.next();
+
+        return outIterator;
     }
 
     private loadLevelData = (name: string): LevelData => {

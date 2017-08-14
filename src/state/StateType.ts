@@ -1,3 +1,4 @@
 export enum StateType {
-    Overworld
+    Overworld,
+    OverworldNavigation
 }
