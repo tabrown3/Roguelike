@@ -2,40 +2,24 @@ import GameState from '../GameState';
 import IGameEventHandler from '../../event/IGameEventHandler';
 import { StateType } from '../StateType';
 import GameEventHubs from './../../event/GameEventHubs';
-import NavigationSubState from './NavigationSubState';
+import NavigationState from './NavigationState';
+import { inject, injectable } from 'inversify';
 
+@injectable()
 export default class OverworldState implements GameState {
 
-    public readonly navigationSubState: NavigationSubState = new NavigationSubState();
-
     private _gameEventHubs: GameEventHubs = new GameEventHubs();
-    private currentSubState: GameState = this.navigationSubState;
+    private currentSubState: GameState = this.navigationState;
 
-    constructor() {
+    constructor(
+        @inject(StateType.Navigation) public navigationState: NavigationState) {
 
-        let _this = this; 
+        this.gameEventHubs.keyDownHub.relay(this.getCurrentSubState().gameEventHubs.keyDownHub);
 
-        // TODO: Seriously, refactor this to "relay" pattern where
-        //  Hub has "relay" and "removeRelay" methods or something
-        var bob1: IterableIterator<void> = (function* (): IterableIterator<void> {
-
-            while (true)
-                _this.getCurrentSubState().gameEventHubs.keyDownHub.publishEvent(yield);
-        }());
-
-        var bob2: IterableIterator<void> = (function* (): IterableIterator<void> {
-
-            while (true)
-                _this.getCurrentSubState().gameEventHubs.worldTickHub.publishEvent(yield);
-        }());
-
-        bob1.next();
-        this.gameEventHubs.keyDownHub.addListener(bob1);
-        bob2.next();
-        this.gameEventHubs.worldTickHub.addListener(bob2);
+        this.gameEventHubs.worldTickHub.relay(this.getCurrentSubState().gameEventHubs.worldTickHub);
     }
 
-    public get stateType(): StateType {
+    public get stateType(): symbol {
 
         return StateType.Overworld;
     } 
@@ -50,7 +34,7 @@ export default class OverworldState implements GameState {
         return this.currentSubState;
     }
 
-    public getCurrentSubStateType = (): StateType => {
+    public getCurrentSubStateType = (): symbol => {
 
         return this.currentSubState.stateType;
     }

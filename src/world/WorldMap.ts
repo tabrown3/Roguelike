@@ -13,7 +13,8 @@ import Being from '../Being';
 import IGameEventHandler from '../event/IGameEventHandler';
 import Scene from './level/Scene';
 import WorldSpotData from './WorldSpotData';
-import GameStateManager from './../state/GameStateManager';
+import NavigationState from './../state/overworld/NavigationState';
+import { StateType } from './../state/StateType';
 
 @injectable()
 export default class WorldMap implements IWorldMap {
@@ -21,13 +22,13 @@ export default class WorldMap implements IWorldMap {
     private currentLevel: Level;
 
     constructor(
-        @inject(TYPES.GameStateManager) private gameStateManager: GameStateManager) {
+        @inject(StateType.Navigation) private navigationState: NavigationState) {
 
         let initLevelData = this.loadLevelData("maru_entrance"); // TODO: replace with actual level loading service
 
         this.currentLevel = new Level(initLevelData);
 
-        this.gameStateManager.overworld.navigationSubState.playerActionHub.addListener(this.getPlayerActionListener());
+        this.navigationState.playerActionHub.addListener(this.getPlayerActionListener());
     }
 
     public getMap = (): IDrawable[][] => {

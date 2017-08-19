@@ -1,17 +1,15 @@
-import IGameEventHandler from './event/IGameEventHandler';
 import Vec2 from './common/Vec2';
 import { injectable, inject } from "inversify";
 import Color from './common/Color';
 import Being from './Being';
-import InspectionResult from './InspectionResult';
-import Fixture from './Fixture';
-import ActionRequest from './world/ActionRequest';
-import ActionPermission from './world/ActionPermission';
 import { ActionType } from './world/ActionType';
 import { PermissionType } from './world/PermissionType';
 import IWorldManager from './world/IWorldManager';
 import { TYPES } from './types';
-import GameStateManager from './state/GameStateManager';
+import GameStateManager from './state/RootState';
+import { StateType } from './state/StateType';
+import NavigationState from './state/overworld/NavigationState';
+
 
 @injectable()
 export class Player {
@@ -20,7 +18,7 @@ export class Player {
 
     constructor(
         @inject(TYPES.WorldManager) private worldManager: IWorldManager,
-        @inject(TYPES.GameStateManager) private gameStateManager: GameStateManager) {
+        @inject(StateType.Navigation) private navigationState: NavigationState) {
 
         this.being = new Being(
             "@",
@@ -48,7 +46,7 @@ export class Player {
 
         listenerIterator.next();
 
-        this.gameStateManager.overworld.navigationSubState.gameEventHubs.keyDownHub.addListener(listenerIterator);
+        this.navigationState.gameEventHubs.keyDownHub.addListener(listenerIterator);
     }
 
     public act = (keyDownEvent: any) => {
@@ -75,7 +73,7 @@ export class Player {
         if (attemptLocalPos) {
 
             this.attemptMove(attemptLocalPos);
-            this.gameStateManager.overworld.navigationSubState.playerActionHub.publishEvent(this.being);
+            this.navigationState.playerActionHub.publishEvent(this.being);
         }
     }
 
