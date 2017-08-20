@@ -3,20 +3,16 @@ import GameState from './../GameState';
 import { StateType } from './../StateType';
 import EventHub from './../../event/EventHub';
 import { injectable } from 'inversify';
+import { relayable, relayableContainer, childOf } from '../StateRegistry';
 
 @injectable()
+@childOf(StateType.Overworld)
 export default class NavigationState implements GameState {
 
     private _gameEventHubs: GameEventHubs = new GameEventHubs();
     private _playerActionHub: EventHub = new EventHub();
 
-    constructor() {
-        this.gameEventHubs.keyDownHub.addListener(function*(): IterableIterator<void> {
-            while(true)
-                console.log(yield);
-        }());
-    }
-
+    @relayableContainer()
     public get gameEventHubs() {
 
         return this._gameEventHubs;

@@ -4,19 +4,18 @@ import { StateType } from '../StateType';
 import GameEventHubs from './../../event/GameEventHubs';
 import NavigationState from './NavigationState';
 import { inject, injectable } from 'inversify';
+import { relayableContainer, childOf } from '../StateRegistry';
 
 @injectable()
+@childOf(StateType.Root)
 export default class OverworldState implements GameState {
 
     private _gameEventHubs: GameEventHubs = new GameEventHubs();
-    private currentSubState: GameState = this.navigationState;
+    private currentState: GameState = this.navigationState;
 
     constructor(
         @inject(StateType.Navigation) public navigationState: NavigationState) {
-
-        this.gameEventHubs.keyDownHub.relay(this.getCurrentSubState().gameEventHubs.keyDownHub);
-
-        this.gameEventHubs.worldTickHub.relay(this.getCurrentSubState().gameEventHubs.worldTickHub);
+            
     }
 
     public get stateType(): symbol {
@@ -24,18 +23,19 @@ export default class OverworldState implements GameState {
         return StateType.Overworld;
     } 
 
+    @relayableContainer()
     public get gameEventHubs() {
 
         return this._gameEventHubs;
     }
 
-    public getCurrentSubState = (): GameState => {
+    public getCurrentState = (): GameState => {
 
-        return this.currentSubState;
+        return this.currentState;
     }
 
-    public getCurrentSubStateType = (): symbol => {
+    public getCurrentStateType = (): symbol => {
 
-        return this.currentSubState.stateType;
+        return this.currentState.stateType;
     }
 }
