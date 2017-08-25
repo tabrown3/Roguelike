@@ -5,6 +5,4 @@ let StateType = {
     Navigation: Symbol("Navigation"),
 }
 
-
-
 export { StateType };

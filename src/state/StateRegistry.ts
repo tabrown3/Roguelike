@@ -16,24 +16,25 @@ export function childOf(parentType: symbol): ClassDecorator {
     };
 }
 
+// designates a property for relay which is wired up in GameStateService
 export function relayable(): PropertyDecorator {
 
-    return function (targetClass, propertyName) {
-        
-        if (!targetClass[KEYS.Relayable])
-            targetClass[KEYS.Relayable] = [];
-
-        targetClass[KEYS.Relayable].push(propertyName);
-    };
+    return attachMetadata(KEYS.Relayable);
 }
 
+// identifies a container with relayable properties
 export function relayableContainer(): PropertyDecorator {
 
-    return function (targetClass, propertyName) {
+    return attachMetadata(KEYS.RelayableContainer);
+}
 
-        if (!targetClass[KEYS.RelayableContainer])
-            targetClass[KEYS.RelayableContainer] = [];
+function attachMetadata(key: symbol) {
 
-        targetClass[KEYS.RelayableContainer].push(propertyName);
+    return function (targetClass: Object, propertyName: string|symbol) {
+
+        if (!targetClass[key])
+            targetClass[key] = [];
+
+        targetClass[key].push(propertyName);
     };
 }

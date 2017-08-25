@@ -1,8 +1,8 @@
 System.config({
     //baseURL: "/base",
     map: {
-        'inversify': './node_modules/inversify/lib',
-        'reflect-metadata': './node_modules/reflect-metadata',
+        'inversify': 'node_modules/inversify/lib',
+        'reflect-metadata': 'node_modules/reflect-metadata',
         'systemjs': 'node_modules/systemjs/dist/system.js',
         'es6-module-loader': 'node_modules/es6-module-loader/dist/es6-module-loader.js'
     },

@@ -15,6 +15,7 @@ import RootState from './state/RootState';
 import OverworldState from './state/overworld/OverworldState';
 import NavigationState from './state/overworld/NavigationState';
 import GameStateService from './state/GameStateService';
+import GameStateInitializer from './state/GameStateInitializer';
 
 
 var container = new Container();
@@ -28,6 +29,7 @@ container.bind(TYPES.WorldManager).to(WorldManager).inSingletonScope();
 container.bind(TYPES.Scheduler).to(Scheduler).inSingletonScope();
 container.bind(TYPES.WorldMap).to(WorldMap).inSingletonScope();
 container.bind(TYPES.GameStateService).to(GameStateService).inSingletonScope();
+container.bind(TYPES.GameStateInitializer).to(GameStateInitializer);
 
 container.bind(StateType.Root).to(RootState).inSingletonScope();
 container.bind(StateType.Overworld).to(OverworldState).inSingletonScope();

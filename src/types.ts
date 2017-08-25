@@ -8,7 +8,8 @@ let TYPES = {
     WorldManager: Symbol('WorldManager'),
     Scheduler: Symbol('Scheduler'),
     WorldMap: Symbol('WorldMap'),
-    GameStateService: Symbol('GameStateService')
+    GameStateService: Symbol('GameStateService'),
+    GameStateInitializer: Symbol('GameStateInitializer')
 };
 
 export { TYPES }

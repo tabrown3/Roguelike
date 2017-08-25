@@ -14,12 +14,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      //'node_modules/systemjs/dist/system.js',
-      //'systemjs.config.js',
-      //{ pattern: 'test/*.test.js', included: false, watched: false, served: true },
-      //{ pattern: 'test/*.test.ts', included: false, watched: false, served: true },
-      //{ pattern: 'test/*.map', included: false, watched: false, served: true },
-      //'test/systemjs.bootstrap.js'
+      // 'test/mock/myMockFile.js',
       'test/main.test.js'
     ],
 
@@ -64,7 +59,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
+    singleRun: false,
 
     // Concurrency level
     // how many browser should be started simultaneous
@@ -80,6 +75,8 @@ module.exports = function(config) {
         'test/**/*.test.js',
         'test/**/*.test.ts',
         'test/**/*.map',
+        'test/mock/*.js',
+        'test/mock/*.ts',
         'src/**/*.js',
         'src/**/*.ts',
         'src/**/*.map'
@@ -88,7 +85,11 @@ module.exports = function(config) {
       // SystemJS configuration specifically for tests, added after your config file.
       // Good for adding test libraries and mock modules
       config: {
+        map: {
+          'inversify': 'test/mock'
+        },
         paths: {
+          
         }
       }
     }
