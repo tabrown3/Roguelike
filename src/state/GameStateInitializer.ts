@@ -61,6 +61,7 @@ export default class GameStateInitializer implements IGameStateInitializer {
         }
     }
 
+    // verifyStates should essentially guarantee that each state passed in actually is a state, has a symbol-type, and that there's no disparity between the injected states and known symbol-types (e.g. throws if more symbol-types than states)
     public verifyStates = (states: GameState[], stateType: { [key: string]: symbol }) => {
 
         if (!states || states.length === 0) {
@@ -90,7 +91,7 @@ export default class GameStateInitializer implements IGameStateInitializer {
             let type = stateType[key];
             if (!type) {
 
-                throw new TypeError(`StateType with key ${key} was null, undefined, or otherwise falsey`);
+                throw new TypeError(`StateType with key '${key}' was null, undefined, or otherwise falsey`);
             }
 
             let foundStates = states.filter(u => u.stateType === type);
