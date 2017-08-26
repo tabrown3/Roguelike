@@ -13,18 +13,23 @@ export default class EventHub {
 
         if(!this.isFrozen()) {
 
-            for (let ind = this.listeners.length - 1; ind >= 0; ind--) {
+            Promise.resolve().then(() => { // execute all listeners next event loop
 
-                let result = this.listeners[ind].next(...args);
+                for (let ind = this.listeners.length - 1; ind >= 0; ind--) {
 
-                if (result.done)
-                    this.listeners.splice(ind, 1);
-            }
+                        
+                        let result = this.listeners[ind].next(...args);
+
+                        if (result.done)
+                            this.listeners.splice(ind, 1);
+                }
+            });
         }
         
         return this.isFrozen(); // was hub frozen when you tried to publish?
     }
     
+    // used to prevent publishEvent from publishing
     public freeze = () => {
 
         this.frozen = true;
@@ -40,6 +45,7 @@ export default class EventHub {
         return this.frozen;
     }
 
+    // will publish argument when this EventHub is published
     public relay = (hub: EventHub): IterableIterator<void> => {
 
         let outIterator = (function* (): IterableIterator<void> {
@@ -52,5 +58,10 @@ export default class EventHub {
         this.addListener(outIterator);
 
         return outIterator;
+    }
+
+    public get listenerCount() {
+        
+        return this.listeners.length;
     }
 }

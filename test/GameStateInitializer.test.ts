@@ -1,45 +1,51 @@
 import GameStateInitializer from './../src/state/GameStateInitializer';
 import GameState from './../src/state/GameState';
 import GameEventHubs from './../src/event/GameEventHubs';
+import { KEYS } from './../src/state/StateRegistry';
 
 export default (function(){
 
     describe('GameStateInitializer class', function(){
 
+        let gameStateInitializer: GameStateInitializer = new GameStateInitializer();
+
+        let mockState1Symbol: symbol, mockState2Symbol: symbol, mockState3Symbol: symbol;
+        let mockState1: GameState, mockState2: GameState, mockState3: GameState;
+
+        let allThreeStates: GameState[];
+        let allThreeSymbolTypes: { [key: string]: symbol };
+
+        beforeEach(function () {
+
+            mockState1Symbol = Symbol('mockState1Symbol');
+            mockState2Symbol = Symbol('mockState2Symbol');
+            mockState3Symbol = Symbol('mockState3Symbol');
+
+            mockState1 = {
+                stateType: mockState1Symbol,
+                gameEventHubs: new GameEventHubs()
+            };
+
+            mockState2 = {
+                stateType: mockState2Symbol,
+                gameEventHubs: new GameEventHubs()
+            };
+
+            mockState3 = {
+                stateType: mockState3Symbol,
+                gameEventHubs: new GameEventHubs()
+            };
+
+            allThreeStates = [mockState1, mockState2, mockState3];
+
+            for(let oneOfThree of allThreeStates) { // make gameEventHubs for each relayable containers
+                oneOfThree[KEYS.RelayableContainer] = ['gameEventHubs'];
+            }
+
+            allThreeSymbolTypes = { mockState1Symbol, mockState2Symbol, mockState3Symbol };
+        });
+
         describe('verifyStates method', function(){
-
-            let gameStateInitializer: GameStateInitializer = new GameStateInitializer();
-            
-            let mockState1Symbol: symbol, mockState2Symbol: symbol, mockState3Symbol: symbol;
-            let mockState1: GameState, mockState2: GameState, mockState3: GameState;
-
-            let allThreeStates: GameState[];
-            let allThreeSymbolTypes: { [key: string]: symbol };
-
-            beforeEach(function() {
-                
-                mockState1Symbol = Symbol('mockState1Symbol');
-                mockState2Symbol = Symbol('mockState2Symbol');
-                mockState3Symbol = Symbol('mockState3Symbol');
-
-                mockState1 = {
-                    stateType: mockState1Symbol,
-                    gameEventHubs: new GameEventHubs()
-                };
-
-                mockState2 = {
-                    stateType: mockState2Symbol,
-                    gameEventHubs: new GameEventHubs()
-                };
-
-                mockState3 = {
-                    stateType: mockState3Symbol,
-                    gameEventHubs: new GameEventHubs()
-                };
-
-                allThreeStates = [mockState1, mockState2, mockState3];
-                allThreeSymbolTypes = { mockState1Symbol, mockState2Symbol, mockState3Symbol };
-            });
 
             it('should not throw if states are well defined and passed in', function(){
 
@@ -117,6 +123,45 @@ export default (function(){
 
                     gameStateInitializer.verifyStates([mockState1, mockState2, stateWithRepeatedSymbol], {mockState1Symbol, mockState2Symbol, mockState3Symbol: mockState1Symbol});
                 }).toThrowError(`More than one state with symbol-type ${mockState1.stateType.toString()} has been injected into the GameStateService`);
+            });
+        });
+
+        describe('autoRelay method', function() {
+
+            it('should not relay events in either direction if no ChildOf property; listener count for all events of both should be 0', function() {
+
+                gameStateInitializer.autoRelay([mockState1, mockState2]);
+
+                expect(mockState1.gameEventHubs.keyDownHub.listenerCount).toBe(0);
+                expect(mockState2.gameEventHubs.keyDownHub.listenerCount).toBe(0);
+
+                expect(mockState1.gameEventHubs.worldTickHub.listenerCount).toBe(0);
+                expect(mockState2.gameEventHubs.worldTickHub.listenerCount).toBe(0);
+            });
+
+            it('should relay events of mockState1 to mockState2 since mockState2 is ChildOf mockState1', function (done) {
+
+                mockState2[KEYS.ChildOf] = mockState1.stateType;
+
+                gameStateInitializer.autoRelay([mockState1, mockState2]);
+
+                expect(mockState1.gameEventHubs.keyDownHub.listenerCount).toBe(1);
+                expect(mockState2.gameEventHubs.keyDownHub.listenerCount).toBe(0);
+
+                expect(mockState1.gameEventHubs.worldTickHub.listenerCount).toBe(1);
+                expect(mockState2.gameEventHubs.worldTickHub.listenerCount).toBe(0);
+
+                let testListener = (function* (): IterableIterator<any> {
+
+                    expect(yield).toBe(5);
+                    done();
+                }());
+
+                testListener.next();
+
+                mockState2.gameEventHubs.keyDownHub.addListener(testListener);
+
+                mockState1.gameEventHubs.keyDownHub.publishEvent(5);
             });
         });
     });
