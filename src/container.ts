@@ -16,7 +16,7 @@ import OverworldState from './state/overworld/OverworldState';
 import NavigationState from './state/overworld/NavigationState';
 import GameStateService from './state/GameStateService';
 import GameStateInitializer from './state/GameStateInitializer';
-
+import PauseState from './state/overworld/PauseState';
 
 var container = new Container();
 container.bind(TYPES.Game).to(Game);
@@ -34,5 +34,6 @@ container.bind(TYPES.GameStateInitializer).to(GameStateInitializer);
 container.bind(StateType.Root).to(RootState).inSingletonScope();
 container.bind(StateType.Overworld).to(OverworldState).inSingletonScope();
 container.bind(StateType.Navigation).to(NavigationState).inSingletonScope();
+container.bind(StateType.Pause).to(PauseState).inSingletonScope();
 
 export { container };

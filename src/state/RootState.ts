@@ -35,5 +35,15 @@ export default class RootState implements GameState {
     public get stateType(): symbol {
 
         return StateType.Root;
-    } 
+    }
+
+    public onStateEnter = (args: any[]) => {
+
+        throw new TypeError('not implemented');
+    }
+
+    public onStateLeave = (args: any[]) => {
+
+        throw new TypeError('not implemented');
+    }
 }

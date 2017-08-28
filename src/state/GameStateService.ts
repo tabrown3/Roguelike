@@ -8,33 +8,81 @@ import GameState from './GameState';
 import { KEYS } from './StateRegistry';
 import EventHub from './../event/EventHub';
 import { TYPES } from '../types';
-import GameStateInitializer from './GameStateInitializer';
+import IGameStateInitializer from './IGameStateInitializer';
+import PauseState from './overworld/PauseState';
 
 @injectable()
 export default class GameStateService implements IGameStateService {
 
+    private readonly MAX_NAV_STACK_SIZE = 10;
+
+    private injectedStates: GameState[] = [
+        this.rootState,
+        this.overworldState,
+        this.navigationState,
+        this.pauseState
+    ];
+
+    private _navStack: GameState[] = [];
+    private get navStack() {
+
+        return this._navStack;
+    }
+
+    public get currentState() {
+
+        let lastIndex = this.navStack.length - 1;
+        
+        return (lastIndex >= 0) ? this.navStack[lastIndex] : null;
+    }
+
+    public set currentState(inState: GameState) {
+
+        this.navStack.push(inState);
+        
+        while(this.navStack.length > this.MAX_NAV_STACK_SIZE) {
+            this.navStack.shift();
+        }
+    }
+
     constructor(
-        @inject(TYPES.GameStateInitializer) private initializer: GameStateInitializer,
+        @inject(TYPES.GameStateInitializer) private initializer: IGameStateInitializer,
         @inject(StateType.Root) private rootState: RootState,
         @inject(StateType.Overworld) private overworldState: OverworldState,
-        @inject(StateType.Navigation) private navigationState: NavigationState
+        @inject(StateType.Navigation) private navigationState: NavigationState,
+        @inject(StateType.Pause) private pauseState: PauseState
     ) {
 
-        let injectedStates: GameState[] = [
-            this.rootState,
-            this.overworldState,
-            this.navigationState
-        ];
-
         // verify all states in StateType are being injected (and only once)
-        this.initializer.verifyStates(injectedStates, StateType);
+        this.initializer.verifyStates(this.injectedStates, StateType);
         // relay events that have relay decorator
-        this.initializer.autoRelay(injectedStates);
+        this.initializer.autoRelay(this.injectedStates);
     }
 
     public init = () => {
 
     }
 
-    
+    public goTo = (stateType: symbol, ...args: any[]) => {
+
+        if(!stateType || (typeof stateType !== 'symbol')) {
+
+            throw new TypeError('stateType must be of type \'symbol\'');
+        }
+
+        let targetState = this.injectedStates.find(u => u.stateType === stateType);
+        if(!targetState) {
+            throw new TypeError(`Could not transition to state with symbol-type ${stateType.toString()}: no state with symbol-type ${stateType.toString()} found`);
+        }
+
+        // TODO: traverse parent state tree and find first divergence;
+        //  only freeze old states from divergence down, and only unfreeze
+        //  new states from divergence down; fire off all 'onStateLeave/Enter' events
+        Promise.resolve().then(() => {
+
+            this.currentState.onStateLeave();
+            this.currentState = targetState;
+            this.currentState.onStateEnter(args);
+        });
+    }
 }

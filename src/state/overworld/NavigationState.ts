@@ -27,4 +27,14 @@ export default class NavigationState implements GameState {
 
         return this._playerActionHub;
     }
+
+    public onStateEnter = (args?: any[]) => {
+
+        throw new TypeError('not implemented');
+    }
+
+    public onStateLeave = (args?: any[]) => {
+
+        throw new TypeError('not implemented');
+    }
 }

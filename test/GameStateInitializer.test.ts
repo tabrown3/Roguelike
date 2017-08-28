@@ -15,6 +15,8 @@ export default (function(){
         let allThreeStates: GameState[];
         let allThreeSymbolTypes: { [key: string]: symbol };
 
+        let noop = () => { };
+
         beforeEach(function () {
 
             mockState1Symbol = Symbol('mockState1Symbol');
@@ -23,17 +25,23 @@ export default (function(){
 
             mockState1 = {
                 stateType: mockState1Symbol,
-                gameEventHubs: new GameEventHubs()
+                gameEventHubs: new GameEventHubs(),
+                onStateEnter: noop,
+                onStateLeave: noop
             };
 
             mockState2 = {
                 stateType: mockState2Symbol,
-                gameEventHubs: new GameEventHubs()
+                gameEventHubs: new GameEventHubs(),
+                onStateEnter: noop,
+                onStateLeave: noop
             };
 
             mockState3 = {
                 stateType: mockState3Symbol,
-                gameEventHubs: new GameEventHubs()
+                gameEventHubs: new GameEventHubs(),
+                onStateEnter: noop,
+                onStateLeave: noop
             };
 
             allThreeStates = [mockState1, mockState2, mockState3];
@@ -116,7 +124,9 @@ export default (function(){
 
                 let stateWithRepeatedSymbol = {
                     stateType: mockState1.stateType,
-                    gameEventHubs: new GameEventHubs()
+                    gameEventHubs: new GameEventHubs(),
+                    onStateEnter: noop,
+                    onStateLeave: noop
                 };
 
                 expect(function () {

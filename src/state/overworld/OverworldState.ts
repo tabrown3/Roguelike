@@ -38,4 +38,14 @@ export default class OverworldState implements GameState {
 
         return this.currentState.stateType;
     }
+
+    public onStateEnter = (args: any[]) => {
+
+        throw new TypeError('not implemented');
+    }
+
+    public onStateLeave = (args: any[]) => {
+
+        throw new TypeError('not implemented');
+    }
 }
