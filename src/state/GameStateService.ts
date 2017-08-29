@@ -10,18 +10,21 @@ import EventHub from './../event/EventHub';
 import { TYPES } from '../types';
 import IGameStateInitializer from './IGameStateInitializer';
 import PauseState from './overworld/PauseState';
+import Graph from './../common/Graph';
 
 @injectable()
 export default class GameStateService implements IGameStateService {
 
     private readonly MAX_NAV_STACK_SIZE = 10;
 
-    private injectedStates: GameState[] = [
+    private readonly stateList: GameState[] = [
         this.rootState,
         this.overworldState,
         this.navigationState,
         this.pauseState
     ];
+
+    private readonly stateGraph: Graph<GameState>;
 
     private _navStack: GameState[] = [];
     private get navStack() {
@@ -54,9 +57,10 @@ export default class GameStateService implements IGameStateService {
     ) {
 
         // verify all states in StateType are being injected (and only once)
-        this.initializer.verifyStates(this.injectedStates, StateType);
+        this.initializer.verifyStates(this.stateList, StateType);
         // relay events that have relay decorator
-        this.initializer.autoRelay(this.injectedStates);
+        this.initializer.autoRelay(this.stateList);
+        this.stateGraph = this.initializer.buildStateGraph(this.stateList, StateType);
     }
 
     public init = () => {
@@ -70,7 +74,7 @@ export default class GameStateService implements IGameStateService {
             throw new TypeError('stateType must be of type \'symbol\'');
         }
 
-        let targetState = this.injectedStates.find(u => u.stateType === stateType);
+        let targetState = this.stateList.find(u => u.stateType === stateType);
         if(!targetState) {
             throw new TypeError(`Could not transition to state with symbol-type ${stateType.toString()}: no state with symbol-type ${stateType.toString()} found`);
         }
@@ -80,9 +84,9 @@ export default class GameStateService implements IGameStateService {
         //  new states from divergence down; fire off all 'onStateLeave/Enter' events
         Promise.resolve().then(() => {
 
-            this.currentState.onStateLeave();
+            this.currentState.onStateLeave.publishEvent();
             this.currentState = targetState;
-            this.currentState.onStateEnter(args);
+            this.currentState.onStateEnter.publishEvent(args);
         });
     }
 }

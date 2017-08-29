@@ -15,7 +15,7 @@ export default (function(){
         let allThreeStates: GameState[];
         let allThreeSymbolTypes: { [key: string]: symbol };
 
-        let noop = () => { };
+        let noop = () => {};
 
         beforeEach(function () {
 
@@ -26,22 +26,28 @@ export default (function(){
             mockState1 = {
                 stateType: mockState1Symbol,
                 gameEventHubs: new GameEventHubs(),
-                onStateEnter: noop,
-                onStateLeave: noop
+                onStateEnter: null,
+                onStateLeave: null,
+                freeze: noop,
+                unfreeze: noop
             };
 
             mockState2 = {
                 stateType: mockState2Symbol,
                 gameEventHubs: new GameEventHubs(),
-                onStateEnter: noop,
-                onStateLeave: noop
+                onStateEnter: null,
+                onStateLeave: null,
+                freeze: noop,
+                unfreeze: noop
             };
 
             mockState3 = {
                 stateType: mockState3Symbol,
                 gameEventHubs: new GameEventHubs(),
-                onStateEnter: noop,
-                onStateLeave: noop
+                onStateEnter: null,
+                onStateLeave: null,
+                freeze: noop,
+                unfreeze: noop
             };
 
             allThreeStates = [mockState1, mockState2, mockState3];
@@ -122,11 +128,13 @@ export default (function(){
 
             it('should throw if two or more states have the same symbol-type', function () {
 
-                let stateWithRepeatedSymbol = {
+                let stateWithRepeatedSymbol: GameState = {
                     stateType: mockState1.stateType,
                     gameEventHubs: new GameEventHubs(),
-                    onStateEnter: noop,
-                    onStateLeave: noop
+                    onStateEnter: null,
+                    onStateLeave: null,
+                    freeze: noop,
+                    unfreeze: noop
                 };
 
                 expect(function () {

@@ -7,4 +7,16 @@ export default class GameEventHubs {
     public keyDownHub: EventHub = new EventHub();
     @relayable()
     public worldTickHub: EventHub = new EventHub();
+
+    public freeze = (): void => {
+
+        this.keyDownHub.freeze();
+        this.worldTickHub.freeze();
+    }
+
+    public unfreeze = (): void => {
+
+        this.keyDownHub.unfreeze();
+        this.worldTickHub.freeze();
+    }
 }

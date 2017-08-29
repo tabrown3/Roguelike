@@ -165,5 +165,11 @@ describe('Graph class', function() {
             expect(testGraph.currentData).toBe('root data');
             expect(testGraph.peekParentData()).toBe(undefined);
         });
+
+        it('should return true if index exists, else false', function() {
+
+            expect(testGraph.indexExists(testGraphRootSymbol)).toBeTruthy();
+            expect(testGraph.indexExists(Symbol())).toBeFalsy();
+        });
     });
 });

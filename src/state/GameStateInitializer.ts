@@ -3,6 +3,7 @@ import { KEYS } from './StateRegistry';
 import EventHub from './../event/EventHub';
 import IGameStateInitializer from './IGameStateInitializer';
 import { injectable } from 'inversify';
+import Graph from './../common/Graph';
  
 @injectable()
 export default class GameStateInitializer implements IGameStateInitializer {
@@ -109,5 +110,49 @@ export default class GameStateInitializer implements IGameStateInitializer {
         }
 
         // TODO: make sure there are no circular childOf decorator (parent state) references
+    }
+
+    public buildStateGraph = (inStateList: GameState[], stateType: { [key: string]: symbol }): Graph<GameState> => {
+
+        let stateList = [...inStateList]; // copy of inStateList
+        let rootStateIndex = stateList.findIndex(u => u.stateType === stateType.Root);
+
+        if (rootStateIndex === -1) throw new TypeError('Root State could not be found');
+
+        let rootState = stateList.splice(rootStateIndex, 1)[0];
+        let outGraph = new Graph(rootState, stateType.Root);
+
+        let count = 0;
+        while (stateList.length > 0) {
+
+            let tempState = stateList[count];
+            let parentType: symbol = tempState[KEYS.ChildOf];
+            let parentTypeInGraph = outGraph.indexExists(parentType);
+
+            if (parentType) {
+
+                if (parentTypeInGraph) {
+
+                    outGraph.moveByIndex(parentType);
+                    outGraph.appendChild(tempState, tempState.stateType);
+                    stateList.splice(count, 1);
+                    // don't increment count because we just removed an element
+                }
+                else {
+
+                    count++; // parent isn't in Graph yet, on to the next one
+                }
+            }
+            else {
+
+                throw new TypeError(`State w/ symbol-type ${tempState.stateType.toString()} is not root but does not have a parent state: add a @childOf decorator`);
+            }
+
+            if (count >= stateList.length) count = 0;
+        }
+
+        outGraph.moveToRoot();
+
+        return outGraph;
     }
 }

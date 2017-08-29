@@ -134,6 +134,11 @@ export default class Graph<T> {
         }
     }
 
+    public indexExists = (indexer: symbol): boolean => {
+
+        return !!this.nodeDictionary[indexer];
+    };
+
     // returns index node was added at for use with moveToChild or peekChild
     private appendChildNode = (inNode: Node<T>): number => {
 

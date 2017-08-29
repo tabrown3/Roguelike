@@ -5,47 +5,15 @@ import GameEventHubs from './../../event/GameEventHubs';
 import NavigationState from './NavigationState';
 import { inject, injectable } from 'inversify';
 import { relayableContainer, childOf } from '../StateRegistry';
+import EventHub from './../../event/EventHub';
+import BaseState from '../BaseState';
 
 @injectable()
 @childOf(StateType.Root)
-export default class OverworldState implements GameState {
-
-    private _gameEventHubs: GameEventHubs = new GameEventHubs();
-    private currentState: GameState = this.navigationState;
-
-    constructor(
-        @inject(StateType.Navigation) public navigationState: NavigationState) {
-            
-    }
+export default class OverworldState extends BaseState {
 
     public get stateType(): symbol {
 
         return StateType.Overworld;
     } 
-
-    @relayableContainer()
-    public get gameEventHubs() {
-
-        return this._gameEventHubs;
-    }
-
-    public getCurrentState = (): GameState => {
-
-        return this.currentState;
-    }
-
-    public getCurrentStateType = (): symbol => {
-
-        return this.currentState.stateType;
-    }
-
-    public onStateEnter = (args: any[]) => {
-
-        throw new TypeError('not implemented');
-    }
-
-    public onStateLeave = (args: any[]) => {
-
-        throw new TypeError('not implemented');
-    }
 }

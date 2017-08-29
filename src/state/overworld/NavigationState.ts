@@ -4,19 +4,13 @@ import { StateType } from './../StateType';
 import EventHub from './../../event/EventHub';
 import { injectable } from 'inversify';
 import { relayable, relayableContainer, childOf } from '../StateRegistry';
+import BaseState from '../BaseState';
 
 @injectable()
 @childOf(StateType.Overworld)
-export default class NavigationState implements GameState {
+export default class NavigationState extends BaseState {
 
-    private _gameEventHubs: GameEventHubs = new GameEventHubs();
     private _playerActionHub: EventHub = new EventHub();
-
-    @relayableContainer()
-    public get gameEventHubs() {
-
-        return this._gameEventHubs;
-    }
 
     public get stateType(): symbol {
 
@@ -28,13 +22,15 @@ export default class NavigationState implements GameState {
         return this._playerActionHub;
     }
 
-    public onStateEnter = (args?: any[]) => {
+    public freeze = (): void => {
 
-        throw new TypeError('not implemented');
+        super.freeze();
+        this.playerActionHub.freeze();
     }
 
-    public onStateLeave = (args?: any[]) => {
+    public unfreeze = (): void => {
 
-        throw new TypeError('not implemented');
+        super.unfreeze();
+        this.playerActionHub.unfreeze();
     }
 }
