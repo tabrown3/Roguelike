@@ -7,7 +7,9 @@ export default interface GameState {
     stateType: symbol;
     gameEventHubs: GameEventHubs;
     onStateEnter: EventHub;
-    onStateLeave: EventHub;
+    onStateExit: EventHub;
+    onStateDisembark: EventHub;
+    onStateArrive: EventHub;
     freeze: () => void;
     unfreeze: () => void;
 }

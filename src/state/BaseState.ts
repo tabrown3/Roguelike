@@ -10,7 +10,9 @@ export default abstract class BaseState implements GameState {
 
     private _gameEventHubs: GameEventHubs = new GameEventHubs();
     private _onStateEnter: EventHub = new EventHub();
-    private _onStateLeave: EventHub = new EventHub();
+    private _onStateExit: EventHub = new EventHub();
+    private _onStateArrive: EventHub = new EventHub();
+    private _onStateDisembark: EventHub = new EventHub();
 
     public abstract get stateType(): symbol;
 
@@ -25,22 +27,32 @@ export default abstract class BaseState implements GameState {
         return this._onStateEnter;
     }
 
-    public get onStateLeave() {
+    public get onStateExit() {
 
-        return this._onStateLeave;
+        return this._onStateExit;
+    }
+
+    public get onStateArrive() {
+
+        return this._onStateArrive;
+    }
+
+    public get onStateDisembark() {
+
+        return this._onStateDisembark;
     }
 
     public freeze = (): void => {
 
         this.gameEventHubs.freeze();
         this.onStateEnter.freeze();
-        this.onStateLeave.freeze();
+        this.onStateExit.freeze();
     }
 
     public unfreeze = (): void => {
 
         this.gameEventHubs.unfreeze();
         this.onStateEnter.unfreeze();
-        this.onStateLeave.unfreeze();
+        this.onStateExit.unfreeze();
     }
 }

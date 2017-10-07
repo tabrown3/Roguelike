@@ -172,4 +172,68 @@ describe('Graph class', function() {
             expect(testGraph.indexExists(Symbol())).toBeFalsy();
         });
     });
+
+    describe('sibling method', function() {
+
+        let testGraph: Graph<object>;
+        let testGraphRootSymbol: symbol;
+        let testGraphData: object;
+
+        beforeEach(function () {
+
+            testGraphRootSymbol = Symbol('test graph root symbol');
+            testGraphData = {};
+            testGraph = new Graph(testGraphData, testGraphRootSymbol);
+        });
+
+        it('should create a reference to a different Graph instance', function() {
+
+            let siblingGraph = testGraph.sibling();
+
+            expect(siblingGraph instanceof Graph).toBeTruthy();
+            expect(testGraph).not.toBe(siblingGraph);
+        });
+
+        it('should share the same root Node and data references', function () {
+
+            let siblingGraph = testGraph.sibling();
+
+            expect(testGraph.currentData).toBe(siblingGraph.currentData);
+        });
+
+        it('should share the same children Nodes and their data references', function() {
+
+            let siblingGraph = testGraph.sibling();
+
+            let sharedChildData = {};
+            let sharedChildSymbol = Symbol('shared child symbol');
+
+            siblingGraph.appendChild(sharedChildData, sharedChildSymbol);
+
+            testGraph.moveByIndex(sharedChildSymbol);
+
+            expect(testGraph.currentData).toBe(sharedChildData);
+        });
+
+        it('should allow original and sibling Graphs to be on different current Nodes', function () {
+
+            let siblingGraph = testGraph.sibling();
+
+            let sharedChildData = {};
+            let sharedChildSymbol = Symbol('shared child symbol');
+
+            siblingGraph.appendChild(sharedChildData, sharedChildSymbol);
+
+            testGraph.moveByIndex(sharedChildSymbol); // navigate original to child
+
+            expect(testGraph.currentData).toBe(sharedChildData);
+            expect(siblingGraph.currentData).not.toBe(sharedChildData); // sibling still on root
+            expect(siblingGraph.currentData).toBe(testGraphData); // sibling still on root
+
+            siblingGraph.moveByIndex(sharedChildSymbol);
+
+            expect(siblingGraph.currentData).toBe(sharedChildData); // sibling moved to shared child
+            expect(siblingGraph.currentData).not.toBe(testGraphData); // sibling moved to shared child
+        });
+    });
 });

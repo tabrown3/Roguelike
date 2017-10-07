@@ -15,18 +15,32 @@ export default class EventHub {
 
             Promise.resolve().then(() => { // execute all listeners next event loop
 
-                for (let ind = this.listeners.length - 1; ind >= 0; ind--) {
-
-                        
-                        let result = this.listeners[ind].next(...args);
-
-                        if (result.done)
-                            this.listeners.splice(ind, 1);
-                }
+                this.publish(args);
             });
         }
         
         return this.isFrozen(); // was hub frozen when you tried to publish?
+    }
+
+    public publishEventSync = (...args: any[]): boolean => {
+
+        if (!this.isFrozen()) {
+
+            this.publish(args);
+        }
+
+        return this.isFrozen(); // was hub frozen when you tried to publish?
+    }
+
+    private publish = (args: any[]): void => {
+
+        for (let ind = this.listeners.length - 1; ind >= 0; ind--) {
+
+            let result = this.listeners[ind].next(...args);
+
+            if (result.done)
+                this.listeners.splice(ind, 1);
+        }
     }
     
     // used to prevent publishEvent from publishing

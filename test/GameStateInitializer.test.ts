@@ -27,7 +27,9 @@ export default (function(){
                 stateType: mockState1Symbol,
                 gameEventHubs: new GameEventHubs(),
                 onStateEnter: null,
-                onStateLeave: null,
+                onStateExit: null,
+                onStateArrive: null,
+                onStateDisembark: null,
                 freeze: noop,
                 unfreeze: noop
             };
@@ -36,7 +38,9 @@ export default (function(){
                 stateType: mockState2Symbol,
                 gameEventHubs: new GameEventHubs(),
                 onStateEnter: null,
-                onStateLeave: null,
+                onStateExit: null,
+                onStateArrive: null,
+                onStateDisembark: null,
                 freeze: noop,
                 unfreeze: noop
             };
@@ -45,7 +49,9 @@ export default (function(){
                 stateType: mockState3Symbol,
                 gameEventHubs: new GameEventHubs(),
                 onStateEnter: null,
-                onStateLeave: null,
+                onStateExit: null,
+                onStateArrive: null,
+                onStateDisembark: null,
                 freeze: noop,
                 unfreeze: noop
             };
@@ -132,7 +138,9 @@ export default (function(){
                     stateType: mockState1.stateType,
                     gameEventHubs: new GameEventHubs(),
                     onStateEnter: null,
-                    onStateLeave: null,
+                    onStateExit: null,
+                    onStateArrive: null,
+                    onStateDisembark: null,
                     freeze: noop,
                     unfreeze: noop
                 };

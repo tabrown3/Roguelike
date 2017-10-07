@@ -2,18 +2,19 @@ import Node from './Node';
 
 export default class Graph<T> {
 
-    private readonly _root: Node<T>;
+    private _root: Node<T>;
     private _current: Node<T>;
 
     private nodeDictionary: any = {}; // has to be any because {[key:symbol]: Node<T>} is not allowed as of TS 2.4.2
 
-    constructor(rootData: T, indexer: symbol) {
+    constructor(rootData?: T, indexer?: symbol) {
 
             this._root = new Node<T>();
-            this._root.data = rootData;
             this._current = this._root;
 
-            this.addNodeToDictionary(this._root, indexer);
+            if(rootData) this._root.data = rootData;
+
+            if(indexer) this.addNodeToDictionary(this._root, indexer);
     }
 
     public get currentData(): T {
@@ -79,12 +80,13 @@ export default class Graph<T> {
         return this.currentData;
     }
 
-    public appendChild = (childData: T, indexer: symbol): number => {
+    public appendChild = (childData?: T, indexer?: symbol): number => {
 
         let newChild = new Node<T>();
-        newChild.data = childData;
 
-        this.addNodeToDictionary(newChild, indexer);
+        if(childData) newChild.data = childData;
+
+        if(indexer) this.addNodeToDictionary(newChild, indexer);
         
         let numericIndex = this.appendChildNode(newChild);
         return numericIndex;
@@ -137,7 +139,18 @@ export default class Graph<T> {
     public indexExists = (indexer: symbol): boolean => {
 
         return !!this.nodeDictionary[indexer];
-    };
+    }
+
+    /** Generates new graph referencing exact same objects; allows for multiple graphs with different 'current' nodes */
+    public sibling = (): Graph<T> => {
+
+        let outGraph = new Graph<T>();
+        outGraph._root = this._root; // identical reference
+        outGraph._current = outGraph._root;
+        outGraph.nodeDictionary = this.nodeDictionary; // identical reference
+
+        return outGraph;
+    }
 
     // returns index node was added at for use with moveToChild or peekChild
     private appendChildNode = (inNode: Node<T>): number => {
