@@ -11,6 +11,8 @@ import Entity from '../Entity';
 import { TYPES } from '../types';
 import IWorldMap from './IWorldMap';
 import IDrawable from '../display/IDrawable';
+import NavigationState from './../state/overworld/NavigationState';
+import { StateType } from './../state/StateType';
 
 
 @injectable()
@@ -19,11 +21,19 @@ export default class WorldManager implements IWorldManager {
     //private readonly worldMap: WorldMap = new WorldMap(); // TODO: inject this
 
     constructor(
-        @inject(TYPES.WorldMap) private worldMap: IWorldMap) {
+        @inject(TYPES.WorldMap) private worldMap: IWorldMap,
+        @inject(StateType.Navigation) private navigationState: NavigationState) {
 
     }
 
+    public init = () => {
+
+        this.navigationState.gameEventHubs.keyDownHub.addListener(this.getUtilityKeyListener());
+    }
+
     public requestAction = (request: ActionRequest): ActionPermission => {
+
+        // stubbed; fill this with logic to check boundaries and collision and such so the player knows whether it can move there or not
 
         if (request.type === ActionType.Move) {
             if (this.canMoveTo(request.pos)) {
@@ -74,5 +84,28 @@ export default class WorldManager implements IWorldManager {
         }
 
         return navigableSpot && navigableFixtures && !hasBeings;
+    }
+
+    private getUtilityKeyListener = (): IterableIterator<void> => {
+
+        let _this = this;
+
+        let outIterator = (function* (): IterableIterator<void> {
+
+            while (true) {
+
+                let keyDownEvent = yield;
+                let keyPressed = keyDownEvent.key;
+
+                if(keyPressed === 'Escape') {
+                    console.log('Attempting to pause!!!');
+
+                }
+            }
+        })();
+
+        outIterator.next();
+
+        return outIterator;
     }
 }

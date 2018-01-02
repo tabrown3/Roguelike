@@ -13,10 +13,9 @@ export class World implements IWorld {
         @inject(TYPES.WorldManager) private worldManager: IWorldManager) {
     }
 
-    public getView = (): IDrawable[][] => {
-        
-        let map = this.worldManager.getWorldMap();
+    public init = () => {
 
-        return map;
+        this.player.init();
+        this.worldManager.init();
     }
 }

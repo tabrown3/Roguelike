@@ -3,6 +3,7 @@ import { IViewEngine } from './display/IViewEngine';
 import { injectable, inject } from "inversify";
 import { TYPES } from './types';
 import IGameStateService from './state/IGameStateService';
+import IWorldManager from './world/IWorldManager';
 
 @injectable()
 export class Game {
@@ -16,7 +17,6 @@ export class Game {
     public start = () => {
         
         let renderLoop = (timeStamp: number) => {
-            //this.viewEngine.renderWorld(this.world.getView());
             this.viewEngine.renderWorld(this.gameStateService.currentState.getView());
             window.requestAnimationFrame(renderLoop); // call render loop recursively
         }
@@ -24,5 +24,6 @@ export class Game {
         window.requestAnimationFrame(renderLoop); // kick off render loop
 
         this.gameStateService.init();
+        this.world.init();
     }
 }

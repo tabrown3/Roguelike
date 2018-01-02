@@ -14,22 +14,22 @@ import NavigationState from './state/overworld/NavigationState';
 @injectable()
 export class Player {
 
-    public readonly being: Being;
+    public being: Being;
 
     constructor(
         @inject(TYPES.WorldManager) private worldManager: IWorldManager,
         @inject(StateType.Navigation) private navigationState: NavigationState) {
+
+        
+    }
+
+    public init = () => {
 
         this.being = new Being(
             "@",
             new Color("0", "0", "0"),
             new Color("F", "F", "F")
         );
-
-        this.init();
-    }
-
-    private init = () => {
 
         this.worldManager.initEntity(this.being);
 

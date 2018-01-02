@@ -6,6 +6,7 @@ import Entity from '../Entity';
 import IDrawable from '../display/IDrawable';
 
 export default interface IWorldManager {
+    init: () => void;
     requestAction: (request: ActionRequest) => ActionPermission;
     commitAction: (request: ActionRequest) => void;
     initEntity: (entity: Entity) => void;
