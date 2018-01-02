@@ -55,10 +55,6 @@ export default class WorldManager implements IWorldManager {
         this.worldMap.setEntity(entity, entity.getPos());
     }
 
-    public getWorldMap = (): IDrawable[][] => {
-        return this.worldMap.getMap();
-    }
-
     private canMoveTo = (pos: Vec2): boolean => {
 
         let worldSpot = this.worldMap.getSpot(pos);

@@ -9,5 +9,4 @@ export default interface IWorldManager {
     requestAction: (request: ActionRequest) => ActionPermission;
     commitAction: (request: ActionRequest) => void;
     initEntity: (entity: Entity) => void;
-    getWorldMap: () => IDrawable[][];
 }

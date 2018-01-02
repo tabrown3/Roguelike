@@ -1,6 +1,7 @@
 import { IWorld } from '../world/IWorld';
+import IDrawable from './IDrawable';
 
 export interface IViewEngine {
 
-    renderWorld(world: IWorld): void;
+    renderWorld(map: IDrawable[][]): void;
 }

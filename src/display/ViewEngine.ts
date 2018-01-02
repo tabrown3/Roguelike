@@ -3,6 +3,7 @@ import { IWorld } from '../world/IWorld';
 import { injectable, inject } from "inversify";
 import { TYPES } from './../types';
 import { VIEW_DIMS } from './../worldConfig';
+import IDrawable from './IDrawable';
 
 @injectable()
 export class ViewEngine implements IViewEngine {
@@ -12,9 +13,9 @@ export class ViewEngine implements IViewEngine {
 
     }
 
-    public renderWorld = (world: IWorld) => {
+    public renderWorld = (map: IDrawable[][]) => {
 
-        let map = world.getView();
+        //let map = world.getView();
 
         for(let x = 0; x < VIEW_DIMS.X; x++) {
             for(let y = 0; y < VIEW_DIMS.Y; y++) {

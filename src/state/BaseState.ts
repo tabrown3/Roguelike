@@ -1,4 +1,4 @@
-import GameState from './GameState';
+import GameState, { ViewHandler } from './GameState';
 import { relayableContainer, childOf } from './StateRegistry';
 import { StateType } from './StateType';
 import GameEventHubs from './../event/GameEventHubs';
@@ -13,6 +13,7 @@ export default abstract class BaseState implements GameState {
     private _onStateExit: EventHub = new EventHub();
     private _onStateArrive: EventHub = new EventHub();
     private _onStateDisembark: EventHub = new EventHub();
+    private _viewHandler: ViewHandler
 
     public abstract get stateType(): symbol;
 
@@ -54,5 +55,27 @@ export default abstract class BaseState implements GameState {
         this.gameEventHubs.unfreeze();
         this.onStateEnter.unfreeze();
         this.onStateExit.unfreeze();
+    }
+
+    public setViewHandler = (handler: ViewHandler) => {
+
+        if(this._viewHandler) { // if trying to set for a second time
+
+            throw new TypeError(`A view handler has already been set for state of state-type ${this.stateType.toString()}; view handler can only be set once and cannot be overridden`);
+        }
+        else {
+
+            this._viewHandler = handler;
+        }
+    }
+
+    public getView = () => {
+
+        if(!this._viewHandler) {
+
+            throw new TypeError(`No view handler set for state of state-type ${this.stateType.toString()}`);
+        }
+
+        return this._viewHandler(); // executes the bound view handler and returns current state's view
     }
 }

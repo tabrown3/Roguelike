@@ -67,6 +67,7 @@ export default class GameStateService implements IGameStateService {
 
     public init = () => {
 
+        this.currentState = this.navigationState;
     }
 
     public goTo = (stateType: symbol, ...args: any[]) => {

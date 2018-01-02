@@ -16,7 +16,8 @@ export class Game {
     public start = () => {
         
         let renderLoop = (timeStamp: number) => {
-            this.viewEngine.renderWorld(this.world);
+            //this.viewEngine.renderWorld(this.world.getView());
+            this.viewEngine.renderWorld(this.gameStateService.currentState.getView());
             window.requestAnimationFrame(renderLoop); // call render loop recursively
         }
 

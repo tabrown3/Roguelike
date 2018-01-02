@@ -28,6 +28,7 @@ export default class WorldMap implements IWorldMap {
 
         this.currentLevel = new Level(initLevelData);
 
+        this.navigationState.setViewHandler(this.getMap); // set the navigation state's view handler
         this.navigationState.playerActionHub.addListener(this.getPlayerActionListener());
     }
 
