@@ -13,7 +13,7 @@ import IWorldMap from './IWorldMap';
 import IDrawable from '../display/IDrawable';
 import NavigationState from './../state/overworld/NavigationState';
 import { StateType } from './../state/StateType';
-
+import IGameStateService from './../state/IGameStateService';
 
 @injectable()
 export default class WorldManager implements IWorldManager {
@@ -22,7 +22,8 @@ export default class WorldManager implements IWorldManager {
 
     constructor(
         @inject(TYPES.WorldMap) private worldMap: IWorldMap,
-        @inject(StateType.Navigation) private navigationState: NavigationState) {
+        @inject(StateType.Navigation) private navigationState: NavigationState,
+        @inject(TYPES.GameStateService) private gameStateService: IGameStateService) {
 
     }
 
@@ -98,8 +99,10 @@ export default class WorldManager implements IWorldManager {
                 let keyPressed = keyDownEvent.key;
 
                 if(keyPressed === 'Escape') {
+
                     console.log('Attempting to pause!!!');
 
+                    _this.gameStateService.goTo(StateType.Pause);
                 }
             }
         })();

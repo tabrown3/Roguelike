@@ -43,14 +43,14 @@ export default abstract class BaseState implements GameState {
         return this._onStateDisembark;
     }
 
-    public freeze = (): void => {
+    public freeze(): void {
 
         this.gameEventHubs.freeze();
         this.onStateEnter.freeze();
         this.onStateExit.freeze();
     }
 
-    public unfreeze = (): void => {
+    public unfreeze(): void {
 
         this.gameEventHubs.unfreeze();
         this.onStateEnter.unfreeze();

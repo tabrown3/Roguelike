@@ -22,13 +22,13 @@ export default class NavigationState extends BaseState {
         return this._playerActionHub;
     }
 
-    public freeze = (): void => {
+    public freeze(): void {
 
         super.freeze();
         this.playerActionHub.freeze();
     }
 
-    public unfreeze = (): void => {
+    public unfreeze(): void {
 
         super.unfreeze();
         this.playerActionHub.unfreeze();
