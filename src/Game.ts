@@ -4,6 +4,7 @@ import { injectable, inject } from "inversify";
 import { TYPES } from './types';
 import IGameStateService from './state/IGameStateService';
 import IWorldManager from './world/IWorldManager';
+import IPauseManager from './pause/IPauseManager';
 
 @injectable()
 export class Game {
@@ -11,7 +12,8 @@ export class Game {
     constructor(
         @inject(TYPES.World) private world: IWorld,
         @inject(TYPES.ViewEngine) private viewEngine: IViewEngine,
-        @inject(TYPES.GameStateService) private gameStateService: IGameStateService) {
+        @inject(TYPES.GameStateService) private gameStateService: IGameStateService,
+        @inject(TYPES.PauseManager) private pauseManager: IPauseManager) {
     }
 
     public start = () => {
@@ -25,5 +27,6 @@ export class Game {
 
         this.gameStateService.init();
         this.world.init();
+        this.pauseManager.init();
     }
 }

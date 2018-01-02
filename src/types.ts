@@ -9,7 +9,8 @@ let TYPES = {
     Scheduler: Symbol('Scheduler'),
     WorldMap: Symbol('WorldMap'),
     GameStateService: Symbol('GameStateService'),
-    GameStateInitializer: Symbol('GameStateInitializer')
+    GameStateInitializer: Symbol('GameStateInitializer'),
+    PauseManager: Symbol('PauseManager')
 };
 
 export { TYPES }
