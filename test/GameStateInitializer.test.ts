@@ -15,7 +15,7 @@ export default (function(){
         let allThreeStates: GameState[];
         let allThreeSymbolTypes: { [key: string]: symbol };
 
-        let noop = () => {};
+        let noop = (...inputs: any[]): any => {};
 
         beforeEach(function () {
 
@@ -30,6 +30,8 @@ export default (function(){
                 onStateExit: null,
                 onStateArrive: null,
                 onStateDisembark: null,
+                setViewHandler: noop,
+                getView: noop,
                 freeze: noop,
                 unfreeze: noop
             };
@@ -41,6 +43,8 @@ export default (function(){
                 onStateExit: null,
                 onStateArrive: null,
                 onStateDisembark: null,
+                setViewHandler: noop,
+                getView: noop,
                 freeze: noop,
                 unfreeze: noop
             };
@@ -52,6 +56,8 @@ export default (function(){
                 onStateExit: null,
                 onStateArrive: null,
                 onStateDisembark: null,
+                setViewHandler: noop,
+                getView: noop,
                 freeze: noop,
                 unfreeze: noop
             };
@@ -141,6 +147,8 @@ export default (function(){
                     onStateExit: null,
                     onStateArrive: null,
                     onStateDisembark: null,
+                    setViewHandler: noop,
+                    getView: noop,
                     freeze: noop,
                     unfreeze: noop
                 };
@@ -186,6 +194,10 @@ export default (function(){
                 testListener.next();
 
                 mockState2.gameEventHubs.keyDownHub.addListener(testListener);
+
+                // EventHubs are frozen by default; must unfreeze if we want the event listener to execute
+                mockState1.gameEventHubs.unfreeze();
+                mockState2.gameEventHubs.unfreeze();
 
                 mockState1.gameEventHubs.keyDownHub.publishEvent(5);
             });

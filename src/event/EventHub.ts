@@ -2,7 +2,7 @@
 export default class EventHub {
 
     private listeners: IterableIterator<void>[] = [];
-    private frozen: boolean = false;
+    private frozen: boolean = true; // all hubs start frozen; unfrozen by GameStateService
 
     public addListener = (listener: IterableIterator<void>) => {
 

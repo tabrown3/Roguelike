@@ -19,12 +19,7 @@ export default class GameStateService implements IGameStateService {
 
     private transitionPending: boolean = false;
 
-    private readonly stateList: GameState[] = [
-        this.rootState,
-        this.overworldState,
-        this.navigationState,
-        this.pauseState
-    ];
+    private readonly stateList: GameState[];
 
     private readonly stateGraph: Graph<GameState>;
 
@@ -58,6 +53,13 @@ export default class GameStateService implements IGameStateService {
         @inject(StateType.Pause) private pauseState: PauseState
     ) {
 
+        this.stateList = [
+            this.rootState,
+            this.overworldState,
+            this.navigationState,
+            this.pauseState
+        ];
+
         // verify all states in StateType are being injected (and only once)
         this.initializer.verifyStates(this.stateList, StateType);
         // relay events that have relay decorator
@@ -68,6 +70,19 @@ export default class GameStateService implements IGameStateService {
     public init = () => {
 
         this.currentState = this.navigationState;
+
+        let myGraph = this.stateGraph.sibling()
+        myGraph.moveByIndex(this.currentState.stateType);
+
+        // all states start frozen; need to unfreeze current state
+        myGraph.currentData.unfreeze();
+
+        // unfreeze parents of current state (if any)
+        while (myGraph.currentHasParent()) { // unfreeze current state and parents
+
+            myGraph.moveToParent();
+            myGraph.currentData.unfreeze();
+        }
     }
 
     public goTo = (stateType: symbol, ...args: any[]) => {

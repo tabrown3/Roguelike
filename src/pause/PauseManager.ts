@@ -17,7 +17,7 @@ export default class PauseManager implements IPauseManager {
 
     }
 
-    init = () => {
+    public init = () => {
 
         this.pauseState.setViewHandler(() => {
 
@@ -40,7 +40,54 @@ export default class PauseManager implements IPauseManager {
                 outArr.push(tempArr);
             }
 
+            let pauseText = "This is the PAUSE menu".split('');
+            let pauseDrawables = pauseText.map((val) => {
+
+                return <IDrawable> {
+                    colorFore: new Color('F', 'F', 'F'),
+                    colorBack: Color.black,
+                    icon: val
+                }
+            });
+
+            outArr[4].splice(0, pauseText.length, ...pauseDrawables);
+
             return outArr;
         });
+
+        this.pauseState.gameEventHubs.keyDownHub.addListener(this.getMenuKeyListener());
+    }
+
+    private getMenuKeyListener = (): IterableIterator<void> => {
+
+        let _this = this;
+
+        let outIterator = (function* (): IterableIterator<void> {
+
+            while (true) {
+
+                let keyDownEvent = yield;
+                let keyPressed = keyDownEvent.key;
+
+                if (keyPressed === 'Escape') {
+
+                    console.log('Attempting to UN-pause!!!');
+
+                    _this.gameStateService.goTo(StateType.Navigation);
+                }
+                else if(keyPressed === 'w') {
+
+                    console.log('MOVE UP');
+                }
+                else if(keyPressed === 's') {
+
+                    console.log('MOVE DOWN');
+                }
+            }
+        })();
+
+        outIterator.next();
+
+        return outIterator;
     }
 }
