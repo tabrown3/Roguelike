@@ -163,25 +163,301 @@ export default (function() {
             });
         });
 
-        xdescribe('superimpose method', function () {
+        describe('superimpose method', function () {
 
             it('should superimpose grids if their dimensions and position are within bounds', function() {
 
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                testGrid1.superimpose(testGrid1, 0, 0); // superimpose on itself
+
+                expect(testGrid1.get(0, 0)).toBe(1);
+                expect(testGrid1.get(0, 2)).toBe(7);
+                expect(testGrid1.get(2, 0)).toBe(3);
+
+                let testArray2 = [
+                    [100, 200]
+                ];
+
+                let testGrid2 = new Grid(testArray2);
+
+                testGrid1.superimpose(testGrid2, 0,0);
+
+                expect(testGrid1.get(0, 0)).toBe(100);
+                expect(testGrid1.get(0, 1)).toBe(200);
+
+                testGrid1.superimpose(testGrid2, 0, 1);
+
+                expect(testGrid1.get(0, 1)).toBe(100);
+                expect(testGrid1.get(0, 2)).toBe(200);
+
+                let testArray3 = [
+                    [300], [400]
+                ];
+
+                let testGrid3 = new Grid(testArray3);
+
+                testGrid1.superimpose(testGrid3, 0, 0);
+                
+                expect(testGrid1.get(0, 0)).toBe(300);
+                expect(testGrid1.get(1, 0)).toBe(400);
+
+                testGrid1.superimpose(testGrid3, 1, 0);
+
+                expect(testGrid1.get(1, 0)).toBe(300);
+                expect(testGrid1.get(2, 0)).toBe(400);
             });
 
-            it('should throw exception if input grid is larger in dimension (x or y) than original', function() {
+            it('should throw exception if input grid is wider than original', function() {
 
+                // 2x2 grid
+                let testArray1 = [
+                    //x=0    x=1
+                    [1, 3], [2, 4]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                // 3x2 grid; Too wide
+                let testArray2 = [
+                    //x=0    x=1     x=2
+                    [1, 4], [2, 5], [3, 6]
+                ];
+
+                let testGrid2 = new Grid(testArray2);
+
+                expect(() => {
+
+                    testGrid1.superimpose(testGrid2, 0, 0);
+
+                }).toThrow(new TypeError('Input grid is too wide'));
+            });
+
+            it('should throw exception if input grid is taller than original', function () {
+
+                // 2x2 grid
+                let testArray1 = [
+                    //x=0    x=1
+                    [1, 3], [2, 4]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                // 2x3 grid; too tall
+                let testArray2 = [
+                    [1, 3, 5], [2, 4, 6]
+                ];
+
+                let testGrid2 = new Grid(testArray2);
+
+                expect(() => { 
+
+                    testGrid1.superimpose(testGrid2, 0, 0);
+
+                }).toThrow(new TypeError('Input grid is too tall'));
             });
 
             it('should throw exception if input position would cause input grid to be out of bounds', function() {
 
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                let testArray2 = [
+                    [100, 200]
+                ];
+
+                let testGrid2 = new Grid(testArray2);
+                
+                let testArray3 = [
+                    [100], [200]
+                ];
+
+                let testGrid3 = new Grid(testArray3);
+
+                expect(() => {
+
+                    testGrid1.superimpose(testGrid2, 0, 1);
+
+                }).not.toThrow(new TypeError('Input grid would extend out of bounds at current position'));
+
+                expect(() => {
+
+                    testGrid1.superimpose(testGrid3, 1, 0);
+
+                }).not.toThrow(new TypeError('Input grid would extend out of bounds at current position'));
+
+                expect(() => {
+
+                    testGrid1.superimpose(testGrid2, 0, 2);
+
+                }).toThrow(new TypeError('Input grid would extend out of bounds at current position'));
+
+                expect(() => {
+
+                    testGrid1.superimpose(testGrid3, 2, 0);
+
+                }).toThrow(new TypeError('Input grid would extend out of bounds at current position'));
+            });
+
+            it('should throw exception if input coordinates are negative', function () {
+
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                let testArray2 = [
+                    [100, 200]
+                ];
+
+                let testGrid2 = new Grid(testArray2);
+
+                let testArray3 = [
+                    [100], [200]
+                ];
+
+                let testGrid3 = new Grid(testArray3);
+
+                expect(() => {
+
+                    testGrid1.superimpose(testGrid2, -1, 0);
+
+                }).toThrow(new TypeError('Input coordinates must be positive'));
+
+                expect(() => {
+
+                    testGrid1.superimpose(testGrid3, 0, -1);
+
+                }).toThrow(new TypeError('Input coordinates must be positive'));
             });
         });
 
-        xdescribe('map method', function () {
+        describe('map method', function () {
 
             it('should return grid of identical dimension where each element has been transformed by the input map function', function() {
 
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                let mappedGrid = testGrid1.map((elem, x, y) => {
+
+                    return elem - 1;
+                });
+
+                let outArray1 = mappedGrid.toArray();
+
+                expect(outArray1[0][0]). toBe(0);
+                expect(outArray1[0][2]).toBe(6);
+                expect(outArray1[2][0]).toBe(2);
+                expect(outArray1[2][2]).toBe(8);
+            });
+
+            it('should transform each element to whatever type is returned from map function', function() {
+
+                let testArray1 = [
+                    [1, 3, 5], [2, 4, 6]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                let mappedGrid = testGrid1.map((elem, x, y) => {
+
+                    return {prop: elem};
+                });
+
+                let outArray1 = mappedGrid.toArray();
+
+                expect(outArray1[0][0].prop).toBe(1);
+                expect(outArray1[0][2].prop).toBe(5);
+                expect(outArray1[1][0].prop).toBe(2);
+                expect(outArray1[1][2].prop).toBe(6);
+            });
+
+            it('should iterate through all elements of first column, then move to the next, etc', function() {
+
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                let coordArr: {x: number, y: number}[] = [];
+
+                let mappedGrid = testGrid1.map((elem, x, y) => {
+
+                    coordArr.push({x: x, y: y});
+                    return;
+                });
+
+                expect(coordArr[0].x).toBe(0); expect(coordArr[0].y).toBe(0);
+                expect(coordArr[1].x).toBe(0); expect(coordArr[1].y).toBe(1);
+                expect(coordArr[2].x).toBe(0); expect(coordArr[2].y).toBe(2);
+                expect(coordArr[6].x).toBe(2); expect(coordArr[6].y).toBe(0);
+                expect(coordArr[7].x).toBe(2); expect(coordArr[7].y).toBe(1);
+                expect(coordArr[8].x).toBe(2); expect(coordArr[8].y).toBe(2);
+            });
+        });
+
+        // describe('underlyingArray method', function() {
+
+        //     it('should return the grid\'s underlying array, not a copy', function() {
+
+        //         let testArray1 = [
+        //             [1, 2]
+        //         ];
+
+        //         let testGrid1 = new Grid(testArray1);
+        //         let outArray1 = testGrid1.underlyingArray();
+        //         outArray1.push([3, 4]);
+
+        //         let arrayCopy = testGrid1.toArray();
+
+        //         expect(arrayCopy[0][0]).toBe(1);
+        //         expect(arrayCopy[1][1]).toBe(4);
+        //     })
+        // });
+
+        describe('Symbol.iterator method', function() {
+
+            it('should allow Grid objects to be iterated over using for-of syntax', function() {
+
+                let testArray1 = [
+                    [1, 3, 5], [2, 4, 6]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                let testOutArr = [];
+
+                for(let column of testGrid1) {
+                    for(let elem of column) {
+
+                        testOutArr.push(elem);
+                    }
+                }
+
+                expect(testOutArr[0]).toBe(1);
+                expect(testOutArr[1]).toBe(3);
+                expect(testOutArr[2]).toBe(5);
+                expect(testOutArr[3]).toBe(2);
+                expect(testOutArr[4]).toBe(4);
+                expect(testOutArr[5]).toBe(6);
             });
         });
     });

@@ -1,4 +1,4 @@
-export default class Grid<T> {
+export default class Grid<T> implements Iterable<T[]> {
 
     private dataArr: T[][] = [];
     private width: number = 0;
@@ -49,14 +49,50 @@ export default class Grid<T> {
 
     public superimpose = (inGrid: Grid<T>, xPos: number, yPos: number): void => {
 
-        throw new TypeError('Grid.superimpose not implemented');
+        if(inGrid.width > this.width) {
+
+            throw new TypeError('Input grid is too wide');
+        }
+        else if(inGrid.height > this.height) {
+
+            throw new TypeError('Input grid is too tall');
+        }
+        else if ((xPos + inGrid.width > this.width) || (yPos + inGrid.height > this.height)) {
+
+            throw new TypeError('Input grid would extend out of bounds at current position');
+        }
+        else if (xPos < 0 || yPos < 0) {
+
+            throw new TypeError('Input coordinates must be positive');
+        }
+
+        for(let i=xPos; i<(xPos + inGrid.width); i++) {
+
+            for(let j=yPos; j<(yPos + inGrid.height); j++) {
+
+                this.dataArr[i][j] = inGrid.get(i-xPos, j-yPos);
+            }
+        }
     }
 
-    public map = <U>(mapFunc: (element: T) => U): Grid<U> => {
+    public map = <U>(mapFunc: (element: T, x?: number, y?: number) => U): Grid<U> => {
 
-        throw new TypeError('Grid.map not implemented');
+        let outArr: U[][] = [];
+
+        for (let i = 0; i < this.width; i++) {
+
+            outArr.push([]);
+
+            for (let j = 0; j < this.height; j++) {
+
+                outArr[i].push(mapFunc(this.dataArr[i][j], i, j));
+            }
+        }
+
+        return new Grid(outArr);
     }
 
+    // Creates copy
     public toArray = (): T[][] => {
 
         let outArr = [];
@@ -66,5 +102,35 @@ export default class Grid<T> {
         }
 
         return outArr;
+    }
+
+    // Returns underlying array (not a copy like toArray)
+    // public underlyingArray = (): T[][] => {
+
+    //     return this.dataArr;
+    // }
+
+    // allows me to pass a Grid to for-of; iterator returns columns of Grid
+    public [Symbol.iterator] = () => {
+
+        let matrix = this.dataArr;
+
+        return (function* (): IterableIterator<T[]> {
+
+            for (let column of matrix) {
+
+                yield [...column]; // shallow copy of column
+            }
+        }());
+    }
+
+    public set = (elem: T, x: number, y: number) => {
+
+        this.dataArr[x][y] = elem;
+    }
+
+    public get = (x: number, y: number) => {
+
+        return this.dataArr[x][y];
     }
 }
