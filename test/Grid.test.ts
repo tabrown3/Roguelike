@@ -238,9 +238,24 @@ export default (function() {
                 }).toThrow(new TypeError('Input grid is too wide'));
             });
 
-            xit('should throw exception if input coords are outside grid dimensions', function () {
+            it('should throw exception if input coords are outside grid dimensions', function () {
 
-                throw new TypeError('test not implemented');
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                let testArray2 = [
+                    [100, 200]
+                ];
+
+                let testGrid2 = new Grid(testArray2);
+
+                expect(() => {
+                    testGrid1.superimpose(testGrid2, 3, 3);
+                }).toThrow(new TypeError('Input coordinates are greater than or equal to grid width or height'));
             });
 
             it('should throw exception if input grid is taller than original', function () {
