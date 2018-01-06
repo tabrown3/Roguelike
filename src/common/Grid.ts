@@ -57,6 +57,10 @@ export default class Grid<T> implements Iterable<T[]> {
 
             throw new TypeError('Input grid is too tall');
         }
+        else if (xPos >= this.width || yPos >= this.height) {
+
+            throw new TypeError('Input coordinates are greater than or equal to grid width or height');
+        }
         else if ((xPos + inGrid.width > this.width) || (yPos + inGrid.height > this.height)) {
 
             throw new TypeError('Input grid would extend out of bounds at current position');
@@ -70,9 +74,40 @@ export default class Grid<T> implements Iterable<T[]> {
 
             for(let j=yPos; j<(yPos + inGrid.height); j++) {
 
-                this.dataArr[i][j] = inGrid.get(i-xPos, j-yPos);
+                //this.dataArr[i][j] = inGrid.get(i-xPos, j-yPos);
+                this.set(inGrid.get(i - xPos, j - yPos), i, j);
             }
         }
+    }
+
+    public subset = (xPos: number, yPos: number, width: number, height: number): Grid<T> => {
+
+        if (xPos >= this.width || yPos >= this.height) {
+
+            throw new TypeError('Input coordinates are greater than or equal to grid width or height');
+        }
+        else if ((xPos + width > this.width) || (yPos + height > this.height)) {
+
+            throw new TypeError('Input grid would extend out of bounds at current position');
+        }
+        else if (xPos < 0 || yPos < 0) {
+
+            throw new TypeError('Input coordinates must be positive');
+        }
+        
+        let outArr: T[][] = [];
+
+        for (let i = xPos; i < (xPos + width); i++) {
+
+            outArr.push([]);
+
+            for (let j = yPos; j < (yPos + height); j++) {
+
+                outArr[i - xPos][j - yPos] = this.get(i, j);
+            }
+        }
+
+        return new Grid<T>(outArr);
     }
 
     public map = <U>(mapFunc: (element: T, x?: number, y?: number) => U): Grid<U> => {
@@ -104,12 +139,6 @@ export default class Grid<T> implements Iterable<T[]> {
         return outArr;
     }
 
-    // Returns underlying array (not a copy like toArray)
-    // public underlyingArray = (): T[][] => {
-
-    //     return this.dataArr;
-    // }
-
     // allows me to pass a Grid to for-of; iterator returns columns of Grid
     public [Symbol.iterator] = () => {
 
@@ -132,5 +161,15 @@ export default class Grid<T> implements Iterable<T[]> {
     public get = (x: number, y: number) => {
 
         return this.dataArr[x][y];
+    }
+
+    public getWidth = () => {
+
+        return this.width;
+    }
+
+    public getHeight = () => {
+
+        return this.height
     }
 }

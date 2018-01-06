@@ -238,6 +238,11 @@ export default (function() {
                 }).toThrow(new TypeError('Input grid is too wide'));
             });
 
+            xit('should throw exception if input coords are outside grid dimensions', function () {
+
+                throw new TypeError('test not implemented');
+            });
+
             it('should throw exception if input grid is taller than original', function () {
 
                 // 2x2 grid
@@ -343,6 +348,125 @@ export default (function() {
             });
         });
 
+        describe('subset method', function() {
+
+            it('should return a subset of the grid designated by the starting coordinates and widths', function() {
+
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                let subGrid1 = testGrid1.subset(0, 0, 3, 1);
+
+                expect(subGrid1.getWidth()).toBe(3);
+                expect(subGrid1.getHeight()).toBe(1);
+                expect(subGrid1.get(0, 0)).toBe(1);
+                expect(subGrid1.get(1, 0)).toBe(2);
+                expect(subGrid1.get(2, 0)).toBe(3);
+
+                let testArray2 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid2 = new Grid(testArray2);
+
+                let subGrid2 = testGrid2.subset(2, 0, 1, 3);
+
+                expect(subGrid2.getWidth()).toBe(1);
+                expect(subGrid2.getHeight()).toBe(3);
+                expect(subGrid2.get(0, 0)).toBe(3);
+                expect(subGrid2.get(0, 1)).toBe(6);
+                expect(subGrid2.get(0, 2)).toBe(9);
+
+                let testArray3 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid3 = new Grid(testArray3);
+
+                let subGrid3 = testGrid3.subset(2, 2, 1, 1);
+
+                expect(subGrid3.getWidth()).toBe(1);
+                expect(subGrid3.getHeight()).toBe(1);
+                expect(subGrid3.get(0, 0)).toBe(9);
+            });
+
+            it('should throw exception if input coords are negative', function() {
+
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                expect(() => {
+
+                    testGrid1.subset(0, -1, 1, 1);
+                }).toThrow(new TypeError('Input coordinates must be positive'));
+
+                expect(() => {
+
+                    testGrid1.subset(-1, 0, 1, 1);
+                }).toThrow(new TypeError('Input coordinates must be positive'));
+            });
+
+            it('should throw exception if input coords are outside grid dimensions', function() {
+
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                expect(() => {
+
+                    testGrid1.subset(3, 2, 1, 1);
+                }).toThrow(new TypeError('Input coordinates are greater than or equal to grid width or height'));
+
+                expect(() => {
+
+                    testGrid1.subset(2, 3, 1, 1);
+                }).toThrow(new TypeError('Input coordinates are greater than or equal to grid width or height'));
+            });
+
+            it('should throw exception if input width would cause subset to be out of bounds', function() {
+
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                expect(() => {
+
+                    testGrid1.subset(0, 0, 4, 1);
+                }).toThrow(new TypeError('Input grid would extend out of bounds at current position'));
+            });
+
+            it('should throw exception if input height would cause subset to be out of bounds', function() {
+
+                let testArray1 = [
+                    //x=0      x=1      x=2
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                expect(() => {
+
+                    testGrid1.subset(0, 0, 1, 4);
+                }).toThrow(new TypeError('Input grid would extend out of bounds at current position'));
+            });
+        });
+
         describe('map method', function () {
 
             it('should return grid of identical dimension where each element has been transformed by the input map function', function() {
@@ -413,25 +537,6 @@ export default (function() {
                 expect(coordArr[8].x).toBe(2); expect(coordArr[8].y).toBe(2);
             });
         });
-
-        // describe('underlyingArray method', function() {
-
-        //     it('should return the grid\'s underlying array, not a copy', function() {
-
-        //         let testArray1 = [
-        //             [1, 2]
-        //         ];
-
-        //         let testGrid1 = new Grid(testArray1);
-        //         let outArray1 = testGrid1.underlyingArray();
-        //         outArray1.push([3, 4]);
-
-        //         let arrayCopy = testGrid1.toArray();
-
-        //         expect(arrayCopy[0][0]).toBe(1);
-        //         expect(arrayCopy[1][1]).toBe(4);
-        //     })
-        // });
 
         describe('Symbol.iterator method', function() {
 
