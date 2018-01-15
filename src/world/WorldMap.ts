@@ -25,8 +25,12 @@ export default class WorldMap implements IWorldMap {
         @inject(StateType.Navigation) private navigationState: NavigationState) {
 
         let initLevelData = this.loadLevelData("maru_entrance"); // TODO: replace with actual level loading service
-
         this.currentLevel = new Level(initLevelData);
+
+        // this.loadLevelData("maru_entrance").then(initLevelData => {
+
+        //     this.currentLevel = new Level(initLevelData);
+        // });
 
         this.navigationState.setViewHandler(this.getMap); // set the navigation state's view handler
         this.navigationState.playerActionHub.addListener(this.getPlayerActionListener());
@@ -82,7 +86,7 @@ export default class WorldMap implements IWorldMap {
     }
 
     private loadLevelData = (name: string): LevelData => {
-        
+
         // let initWorldSpots: WorldSpot[][] = [];
         let initWorldSpotDatas: WorldSpotData[][] = [];
 
@@ -132,4 +136,12 @@ export default class WorldMap implements IWorldMap {
 
         return outData;
     }
+
+    // private loadLevelData = (name: string): Promise<LevelData> => {
+
+    //     return fetch('/content/levels/maru_entrance.json').then(res => {
+
+    //         return res.json();
+    //     });
+    // }
 }

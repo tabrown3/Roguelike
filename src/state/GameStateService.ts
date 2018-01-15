@@ -11,6 +11,8 @@ import { TYPES } from '../types';
 import IGameStateInitializer from './IGameStateInitializer';
 import PauseState from './overworld/PauseState';
 import Graph from './../common/Graph';
+import BuildModeState from "./buildMode/BuildModeState";
+import MapEditorState from "./buildMode/MapEditorState";
 
 @injectable()
 export default class GameStateService implements IGameStateService {
@@ -50,14 +52,18 @@ export default class GameStateService implements IGameStateService {
         @inject(StateType.Root) private rootState: RootState,
         @inject(StateType.Overworld) private overworldState: OverworldState,
         @inject(StateType.Navigation) private navigationState: NavigationState,
-        @inject(StateType.Pause) private pauseState: PauseState
+        @inject(StateType.Pause) private pauseState: PauseState,
+        @inject(StateType.BuildMode) private buildModeState: BuildModeState,
+        @inject(StateType.MapEditor) private mapEditorState: MapEditorState
     ) {
 
         this.stateList = [
             this.rootState,
             this.overworldState,
             this.navigationState,
-            this.pauseState
+            this.pauseState,
+            this.buildModeState,
+            this.mapEditorState
         ];
 
         // verify all states in StateType are being injected (and only once)

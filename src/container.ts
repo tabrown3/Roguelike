@@ -18,6 +18,8 @@ import GameStateService from './state/GameStateService';
 import GameStateInitializer from './state/GameStateInitializer';
 import PauseState from './state/overworld/PauseState';
 import PauseManager from './pause/PauseManager'
+import BuildModeState from "./state/buildMode/BuildModeState";
+import MapEditorState from "./state/buildMode/MapEditorState";
 
 var container = new Container();
 container.bind(TYPES.Game).to(Game);
@@ -37,5 +39,7 @@ container.bind(StateType.Root).to(RootState).inSingletonScope();
 container.bind(StateType.Overworld).to(OverworldState).inSingletonScope();
 container.bind(StateType.Navigation).to(NavigationState).inSingletonScope();
 container.bind(StateType.Pause).to(PauseState).inSingletonScope();
+container.bind(StateType.BuildMode).to(BuildModeState).inSingletonScope();
+container.bind(StateType.MapEditor).to(MapEditorState).inSingletonScope();
 
 export { container };
