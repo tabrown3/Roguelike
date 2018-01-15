@@ -580,5 +580,122 @@ export default (function() {
                 expect(testOutArr[5]).toBe(6);
             });
         });
+
+        describe('get method', function () {
+
+            it('should get element at given coord', function () {
+
+                let testArray1 = [
+                    [1, 3, 5], [2, 4, 6]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                expect(testGrid1.get(0, 0)).toBe(1);
+                expect(testGrid1.get(1, 2)).toBe(6);
+                expect(testGrid1.get(0, 2)).toBe(5);
+                expect(testGrid1.get(1, 0)).toBe(2);
+            });
+
+            it('should throw exception if attempting to get outside of grid bounds', function () {
+
+                let testArray1 = [
+                    [1, 3, 5], [2, 4, 6]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                expect(() => {
+
+                    testGrid1.get(0, -1);
+                }).toThrow(new TypeError('Input coordinates must be positive'));
+
+                expect(() => {
+
+                    testGrid1.get(-1, 2);
+                }).toThrow(new TypeError('Input coordinates must be positive'));
+
+
+
+                expect(() => {
+
+                    testGrid1.get(1, 3);
+                }).toThrow(new TypeError('Input coordinates are greater than or equal to grid width or height'));
+
+                expect(() => {
+
+                    testGrid1.get(2, 0);
+                }).toThrow(new TypeError('Input coordinates are greater than or equal to grid width or height'));
+            });
+        });
+
+        describe('set method', function () {
+
+            it('should replace element at given coord with input', function () {
+
+                let testArray1 = [
+                    [1, 3, 5], [2, 4, 6]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+                testGrid1.set(9, 0, 0);
+                testGrid1.set(10, 1, 2);
+                testGrid1.set(11, 0, 2);
+                testGrid1.set(12, 1, 0);
+
+                expect(testGrid1.get(0, 0)).toBe(9);
+                expect(testGrid1.get(1, 2)).toBe(10);
+                expect(testGrid1.get(0, 2)).toBe(11);
+                expect(testGrid1.get(1, 0)).toBe(12);
+            });
+
+            it('should throw exception if attempting to set outside of grid bounds', function () {
+
+                let testArray1 = [
+                    [1, 3, 5], [2, 4, 6]
+                ];
+
+                let testGrid1 = new Grid(testArray1);
+
+
+                expect(() => {
+
+                    testGrid1.set(9, 0, -1);
+                }).toThrow(new TypeError('Input coordinates must be positive'));
+
+                expect(() => {
+
+                    testGrid1.set(11, -1, 2);
+                }).toThrow(new TypeError('Input coordinates must be positive'));
+
+
+
+                expect(() => {
+
+                    testGrid1.set(10, 1, 3);
+                }).toThrow(new TypeError('Input coordinates are greater than or equal to grid width or height'));
+
+                expect(() => {
+
+                    testGrid1.set(12, 2, 0);
+            }).toThrow(new TypeError('Input coordinates are greater than or equal to grid width or height'));
+            });
+        });
+
+        describe('fill method', function() {
+
+            it('should generate a grid filled at each index with the value provided by the input funciton', function() {
+
+                let cnt = 0;
+
+                let filledGrid = Grid.fill(3, 3, () => cnt++);
+
+                expect(filledGrid.get(0, 0)).toBe(0);
+                expect(filledGrid.get(2, 2)).toBe(8);
+                expect(filledGrid.get(0, 2)).toBe(2);
+                expect(filledGrid.get(2, 0)).toBe(6);
+            });
+        });
     });
 }());

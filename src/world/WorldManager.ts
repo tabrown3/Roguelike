@@ -100,8 +100,6 @@ export default class WorldManager implements IWorldManager {
 
                 if(keyPressed === 'Escape') {
 
-                    console.log('Attempting to pause!!!');
-
                     _this.gameStateService.goTo(StateType.Pause);
                 }
             }

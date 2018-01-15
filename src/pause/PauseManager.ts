@@ -7,6 +7,8 @@ import IGameStateService from './../state/IGameStateService';
 import IDrawable from './../display/IDrawable';
 import Color from './../common/Color';
 import { VIEW_DIMS } from './../worldConfig';
+import Grid from './../common/Grid';
+import InteractiveMenu from './InteractiveMenu';
 
 @injectable()
 export default class PauseManager implements IPauseManager {
@@ -17,46 +19,45 @@ export default class PauseManager implements IPauseManager {
 
     }
 
+    private interactiveMenu: InteractiveMenu;
+
     public init = () => {
+
+        this.interactiveMenu = new InteractiveMenu([
+            {
+                message: 'Resume',
+                action: () => this.gameStateService.goTo(StateType.Navigation)
+            },
+            {
+                message: 'Option 2',
+                action: () => console.log('Option 2')
+            },
+            {
+                message: 'Option 3',
+                action: () => console.log('Option 3')
+            }
+        ]);
 
         this.pauseState.setViewHandler(() => {
 
-            let myDrawable: IDrawable = {
-                colorFore: new Color('F', 'F', 'F'),
-                colorBack: Color.black,
-                icon: '*'
-            };
-
-            let outArr: IDrawable[][] = [];
-
-            for (let i=0; i<VIEW_DIMS.X; i++) {
-
-                let tempArr: IDrawable[] = [];
-
-                for (let j=0; j<VIEW_DIMS.Y; j++) {
-                    tempArr.push(myDrawable);
-                }
-
-                outArr.push(tempArr);
-            }
-
-            let pauseText = "This is the PAUSE menu".split('');
-            let pauseDrawables = pauseText.map((val) => {
+            let outGrid = Grid.fill(VIEW_DIMS.X, VIEW_DIMS.Y, () => {
 
                 return <IDrawable> {
                     colorFore: new Color('F', 'F', 'F'),
                     colorBack: Color.black,
-                    icon: val
-                }
+                    icon: ' '
+                };
             });
 
-            outArr[4].splice(0, pauseText.length, ...pauseDrawables);
+            outGrid.superimpose(this.interactiveMenu.getView(), 12, 5);
 
-            return outArr;
+            return outGrid.toArray();
         });
 
         this.pauseState.gameEventHubs.keyDownHub.addListener(this.getMenuKeyListener());
     }
+
+    
 
     private getMenuKeyListener = (): IterableIterator<void> => {
 
@@ -71,17 +72,19 @@ export default class PauseManager implements IPauseManager {
 
                 if (keyPressed === 'Escape') {
 
-                    console.log('Attempting to UN-pause!!!');
-
                     _this.gameStateService.goTo(StateType.Navigation);
                 }
                 else if(keyPressed === 'w') {
 
-                    console.log('MOVE UP');
+                    _this.interactiveMenu.moveSelectorUp();
                 }
                 else if(keyPressed === 's') {
+                    
+                    _this.interactiveMenu.moveSelectorDown();
+                }
+                else if(keyPressed === 'Enter') {
 
-                    console.log('MOVE DOWN');
+                    _this.interactiveMenu.executeMenuOption();
                 }
             }
         })();

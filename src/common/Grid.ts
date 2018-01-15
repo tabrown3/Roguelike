@@ -49,6 +49,8 @@ export default class Grid<T> implements Iterable<T[]> {
 
     public superimpose = (inGrid: Grid<T>, xPos: number, yPos: number): void => {
 
+        this.pointBoundaryCheck(this.width, this.height, xPos, yPos);
+
         if(inGrid.width > this.width) {
 
             throw new TypeError('Input grid is too wide');
@@ -57,17 +59,9 @@ export default class Grid<T> implements Iterable<T[]> {
 
             throw new TypeError('Input grid is too tall');
         }
-        else if (xPos >= this.width || yPos >= this.height) {
-
-            throw new TypeError('Input coordinates are greater than or equal to grid width or height');
-        }
         else if ((xPos + inGrid.width > this.width) || (yPos + inGrid.height > this.height)) {
 
             throw new TypeError('Input grid would extend out of bounds at current position');
-        }
-        else if (xPos < 0 || yPos < 0) {
-
-            throw new TypeError('Input coordinates must be positive');
         }
 
         for(let i=xPos; i<(xPos + inGrid.width); i++) {
@@ -82,17 +76,11 @@ export default class Grid<T> implements Iterable<T[]> {
 
     public subset = (xPos: number, yPos: number, width: number, height: number): Grid<T> => {
 
-        if (xPos >= this.width || yPos >= this.height) {
+        this.pointBoundaryCheck(this.width, this.height, xPos, yPos);
 
-            throw new TypeError('Input coordinates are greater than or equal to grid width or height');
-        }
-        else if ((xPos + width > this.width) || (yPos + height > this.height)) {
+        if ((xPos + width > this.width) || (yPos + height > this.height)) {
 
             throw new TypeError('Input grid would extend out of bounds at current position');
-        }
-        else if (xPos < 0 || yPos < 0) {
-
-            throw new TypeError('Input coordinates must be positive');
         }
         
         let outArr: T[][] = [];
@@ -155,10 +143,14 @@ export default class Grid<T> implements Iterable<T[]> {
 
     public set = (elem: T, x: number, y: number) => {
 
+        this.pointBoundaryCheck(this.width, this.height, x, y);
+
         this.dataArr[x][y] = elem;
     }
 
     public get = (x: number, y: number) => {
+
+        this.pointBoundaryCheck(this.width, this.height, x, y);
 
         return this.dataArr[x][y];
     }
@@ -170,6 +162,42 @@ export default class Grid<T> implements Iterable<T[]> {
 
     public getHeight = () => {
 
-        return this.height
+        return this.height;
+    }
+
+    public clone = () => {
+
+        return new Grid(this.dataArr);
+    }
+
+    // creates a new grid with width and height specified, filled with
+    //  values returned by fillFunc
+    public static fill = <C>(width: number, height: number, fillFunc: (x: number, y: number) => C): Grid<C> => {
+
+        let outArr: C[][] = [];
+
+        for(let i=0; i<width; i++) {
+
+            outArr.push([]);
+
+            for(let j=0; j<height; j++) {
+                
+                outArr[i].push(fillFunc(i, j));
+            }
+        }
+
+        return new Grid(outArr);
+    }
+
+    private pointBoundaryCheck = (width: number, height: number, x: number, y: number) => {
+
+        if (x >= width || y >= height) {
+
+            throw new TypeError('Input coordinates are greater than or equal to grid width or height');
+        }
+        else if (x < 0 || y < 0) {
+
+            throw new TypeError('Input coordinates must be positive');
+        }
     }
 }
