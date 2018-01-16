@@ -1,10 +1,10 @@
 
 export default class EventHub {
 
-    private listeners: IterableIterator<void>[] = [];
+    private listeners: IterableIterator<any>[] = [];
     private frozen: boolean = true; // all hubs start frozen; unfrozen by GameStateService
 
-    public addListener = (listener: IterableIterator<void>) => {
+    public addListener = (listener: IterableIterator<any>) => {
 
         this.listeners.push(listener);
     }
@@ -14,27 +14,23 @@ export default class EventHub {
         return Promise.resolve().then(() => { // execute all listeners next event loop
 
             if (!this.isFrozen())
-                this.publish(args);
+                return this.publish(args);
 
+        }).then(() => {
+            
             return this.isFrozen(); // was hub frozen when you tried to publish?
         });
     }
 
-    public publishEventSync = (...args: any[]): boolean => {
-
-        if (!this.isFrozen()) {
-
-            this.publish(args);
-        }
-
-        return this.isFrozen(); // was hub frozen when you tried to publish?
-    }
-
-    private publish = (args: any[]): void => {
+    private publish = async (args: any[]): Promise<void> => {
 
         for (let ind = this.listeners.length - 1; ind >= 0; ind--) {
 
             let result = this.listeners[ind].next(...args);
+
+            if(result.value instanceof Promise) { // if it's a promise, wait for it to resolve
+                await result.value;
+            }
 
             if (result.done)
                 this.listeners.splice(ind, 1);

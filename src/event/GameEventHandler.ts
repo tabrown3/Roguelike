@@ -14,7 +14,10 @@ export class GameEventHandler implements IGameEventHandler {
     constructor() {
 
         // keydown event
-        window.addEventListener("keydown", this.gameEventHubs.keyDownHub.publishEvent);
+        window.addEventListener("keydown", (...args: any[]) => {
+
+            this.gameEventHubs.keyDownHub.publishEvent(...args);
+        });
 
         // game tick event
         setInterval(this.gameEventHubs.worldTickHub.publishEvent, GAME_LOOP_INTERVAL);

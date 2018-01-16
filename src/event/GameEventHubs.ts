@@ -17,6 +17,6 @@ export default class GameEventHubs {
     public unfreeze = (): void => {
 
         this.keyDownHub.unfreeze();
-        this.worldTickHub.freeze();
+        this.worldTickHub.unfreeze();
     }
 }

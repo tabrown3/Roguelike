@@ -16,17 +16,21 @@ export class Game {
         @inject(TYPES.PauseManager) private pauseManager: IPauseManager) {
     }
 
-    public start = () => {
+    public start = async () => {
         
+        await this.gameStateService.init(); // THIS CALL MUST BE FIRST
+
+        
+        this.world.init();
+        this.pauseManager.init();
+
+
+        // THESE CALLS (below) MUST BE LAST
         let renderLoop = (timeStamp: number) => {
             this.viewEngine.renderWorld(this.gameStateService.currentState.getView());
             window.requestAnimationFrame(renderLoop); // call render loop recursively
         }
 
         window.requestAnimationFrame(renderLoop); // kick off render loop
-
-        this.gameStateService.init();
-        this.world.init();
-        this.pauseManager.init();
     }
 }

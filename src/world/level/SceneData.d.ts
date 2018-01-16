@@ -1,8 +1,9 @@
 import Vec2 from '../../common/Vec2';
-import Transition from './Transition';
+import Vec2Data from '../../common/Vec2Data';
+import TransitionData from './TransitionData';
 
 export default interface SceneData {
     name: string,
-    camOrigin: Vec2,
-    transitions: Transition<string>[];
+    camOrigin: Vec2Data,
+    transitions: TransitionData<string>[];
 }

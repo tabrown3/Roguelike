@@ -73,9 +73,9 @@ export default class GameStateService implements IGameStateService {
         this.stateGraph = this.initializer.buildStateGraph(this.stateList, StateType);
     }
 
-    public init = () => {
+    public init = async () => {
 
-        this.currentState = this.navigationState;
+        this.currentState = this.rootState;
 
         let myGraph = this.stateGraph.sibling()
         myGraph.moveByIndex(this.currentState.stateType);
@@ -84,11 +84,13 @@ export default class GameStateService implements IGameStateService {
         myGraph.currentData.unfreeze();
 
         // unfreeze parents of current state (if any)
-        while (myGraph.currentHasParent()) { // unfreeze current state and parents
+        // while (myGraph.currentHasParent()) { // unfreeze current state and parents
 
-            myGraph.moveToParent();
-            myGraph.currentData.unfreeze();
-        }
+        //     myGraph.moveToParent();
+        //     myGraph.currentData.unfreeze();
+        // }
+
+        await this.goTo(this.navigationState.stateType);
     }
 
     public goTo = async (stateType: symbol, ...args: any[]) => {
@@ -147,12 +149,10 @@ export default class GameStateService implements IGameStateService {
 
             /** There are two special cases we are accounting for below: what if we're going from a child straight up to a parent, or parent straight down to a child? */
             if (fromTopState === toTopState) { // if this is true, the two stacks haven't diverged
-
-                if (fromStateStack.length === 1) { // straight down; only entering
+            
+                if (fromStateStack.length === 1 || toStateStack.length === 1) { // straight down; only entering
 
                     enterStateStack.pop(); // because the top state is the state we're on; don't need to enter
-                }
-                else if (toStateStack.length === 1) { // straight up; only leaving
 
                     leaveStateStack.pop(); // because the top state is the state we're going to; don't need to leave
                 }
@@ -164,7 +164,7 @@ export default class GameStateService implements IGameStateService {
             
 
             return this.fireLifecycleEvents(fromState, toState, leaveStateStack, enterStateStack, args);
-            
+
         }).then(() => {
 
             this.transitionPending = false;

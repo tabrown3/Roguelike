@@ -119,7 +119,7 @@ export default class Level implements ITransitionable<string> {
 
     public static getScenesFromSceneData = (sceneDatas: SceneData[]): Scene[] => {
 
-        let outScenes = sceneDatas.map(elem => new Scene(elem.name, elem.camOrigin, []));
+        let outScenes = sceneDatas.map(elem => new Scene(elem.name, Vec2.fromVec2Data(elem.camOrigin), []));
 
         for(let outScene of outScenes) {
             
@@ -129,7 +129,7 @@ export default class Level implements ITransitionable<string> {
 
                 outScene.transitions.push({
                     node: outScenes.find(scene => scene.name === tran.node),
-                    transitionAt: tran.transitionAt
+                    transitionAt: Vec2.fromVec2Data(tran.transitionAt)
                 });
             }
         }

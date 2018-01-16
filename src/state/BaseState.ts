@@ -48,6 +48,8 @@ export default abstract class BaseState implements GameState {
         this.gameEventHubs.freeze();
         this.onStateEnter.freeze();
         this.onStateExit.freeze();
+        this.onStateArrive.freeze();
+        this.onStateDisembark.freeze();
     }
 
     public unfreeze(): void {
@@ -55,6 +57,8 @@ export default abstract class BaseState implements GameState {
         this.gameEventHubs.unfreeze();
         this.onStateEnter.unfreeze();
         this.onStateExit.unfreeze();
+        this.onStateArrive.unfreeze();
+        this.onStateDisembark.unfreeze();
     }
 
     public setViewHandler = (handler: ViewHandler) => {

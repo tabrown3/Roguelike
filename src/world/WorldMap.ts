@@ -24,18 +24,7 @@ export default class WorldMap implements IWorldMap {
     constructor(
         @inject(StateType.Navigation) private navigationState: NavigationState) {
 
-        navigationState.onStateArrive.addListener
-
-        let initLevelData = this.loadLevelData("maru_entrance"); // TODO: replace with actual level loading service
-        this.currentLevel = new Level(initLevelData);
-
-        // this.loadLevelData("maru_entrance").then(initLevelData => {
-
-        //     this.currentLevel = new Level(initLevelData);
-        // });
-
-        this.navigationState.setViewHandler(this.getMap); // set the navigation state's view handler
-        this.navigationState.playerActionHub.addListener(this.getPlayerActionListener());
+        navigationState.onStateArrive.addListener(this.getOnStateArriveListener());
     }
 
     public getMap = (): IDrawable[][] => {
@@ -87,80 +76,83 @@ export default class WorldMap implements IWorldMap {
         return outIterator;
     }
 
-    private getOnStateArriveListener = (): IterableIterator<void> => {
+    private getOnStateArriveListener = (): IterableIterator<Promise<void>> => {
 
         let _this = this;
 
-        let outIterator = (function* (): IterableIterator<void> {
+        let outIterator = (function* (): IterableIterator<Promise<void>> {
 
-            while(true) {
+            yield _this.loadLevelData("maru_entrance").then((initLevelData: LevelData) => {
 
-                yield 
-            }
+                _this.currentLevel = new Level(initLevelData);
+
+                _this.navigationState.setViewHandler(_this.getMap); // set the navigation state's view handler
+                _this.navigationState.playerActionHub.addListener(_this.getPlayerActionListener());
+            });
         })();
 
-        outIterator.next();
+        // outIterator.next();
 
         return outIterator;
     }
 
-    private loadLevelData = (name: string): LevelData => {
+    // private loadLevelData = (name: string): LevelData => {
 
-        // let initWorldSpots: WorldSpot[][] = [];
-        let initWorldSpotDatas: WorldSpotData[][] = [];
+    //     // let initWorldSpots: WorldSpot[][] = [];
+    //     let initWorldSpotDatas: WorldSpotData[][] = [];
 
-        for (let i = 0; i < 80; i++) { // TODO: replace this with logic to generate init LevelData
-            initWorldSpotDatas[i] = [];
+    //     for (let i = 0; i < 80; i++) { // TODO: replace this with logic to generate init LevelData
+    //         initWorldSpotDatas[i] = [];
 
-            for (let j = 0; j < 25; j++) {
-                initWorldSpotDatas[i][j] = {
-                    terrain: {
-                        icon: ".",
-                        colorFore: {r: "F", g: "F", b: "F"},
-                        colorBack: { r: "0", g: "0", b: "0"},
-                        navigable: true
-                    }
-                };
-            }
-        }
+    //         for (let j = 0; j < 25; j++) {
+    //             initWorldSpotDatas[i][j] = {
+    //                 terrain: {
+    //                     icon: ".",
+    //                     colorFore: {r: "F", g: "F", b: "F"},
+    //                     colorBack: { r: "0", g: "0", b: "0"},
+    //                     navigable: true
+    //                 }
+    //             };
+    //         }
+    //     }
 
-        let outData: LevelData = {
-            worldSpots: initWorldSpotDatas,
-            name: name,
-            scenes: [],
-            defaultScene: null,
-            adjacentLevels: []
-        };
+    //     let outData: LevelData = {
+    //         worldSpots: initWorldSpotDatas,
+    //         name: name,
+    //         scenes: [],
+    //         defaultScene: null,
+    //         adjacentLevels: []
+    //     };
 
-        let testScene1 = new Scene("entrance", new Vec2(-10, -5), []);
-        let testScene2 = new Scene("antechamber", new Vec2(5, 5), []);
+    //     let testScene1 = new Scene("entrance", new Vec2(-10, -5), []);
+    //     let testScene2 = new Scene("antechamber", new Vec2(5, 5), []);
 
-        let testTransition1 = {
-            transitionAt: new Vec2(6, 6),
-            node: testScene2
-        };
+    //     let testTransition1 = {
+    //         transitionAt: new Vec2(6, 6),
+    //         node: testScene2
+    //     };
 
-        let testTransition2 = {
-            transitionAt: new Vec2(5, 5),
-            node: testScene1
-        };
+    //     let testTransition2 = {
+    //         transitionAt: new Vec2(5, 5),
+    //         node: testScene1
+    //     };
 
-        testScene1.transitions.push(testTransition1);
-        testScene2.transitions.push(testTransition2);
+    //     testScene1.transitions.push(testTransition1);
+    //     testScene2.transitions.push(testTransition2);
 
-        outData.scenes.push(testScene1.toSceneData());
-        outData.scenes.push(testScene2.toSceneData());
+    //     outData.scenes.push(testScene1.toSceneData());
+    //     outData.scenes.push(testScene2.toSceneData());
 
-        outData.defaultScene = testScene1.toSceneData();
+    //     outData.defaultScene = testScene1.toSceneData();
 
-        return outData;
-    }
-
-    // private loadLevelData = (name: string): Promise<LevelData> => {
-
-    //     return fetch('/content/levels/maru_entrance.json').then(res => {
-
-    //         return res.json();
-    //     });
+    //     return outData;
     // }
+
+    private loadLevelData = (name: string): Promise<LevelData> => {
+
+        return fetch('/content/levels/maru_entrance.json').then(res => {
+
+            return res.json();
+        });
+    }
 }
