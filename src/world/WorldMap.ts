@@ -24,6 +24,8 @@ export default class WorldMap implements IWorldMap {
     constructor(
         @inject(StateType.Navigation) private navigationState: NavigationState) {
 
+        navigationState.onStateArrive.addListener
+
         let initLevelData = this.loadLevelData("maru_entrance"); // TODO: replace with actual level loading service
         this.currentLevel = new Level(initLevelData);
 
@@ -77,6 +79,23 @@ export default class WorldMap implements IWorldMap {
                     _this.loadLevelData(levelTransition.node);
                 else
                     _this.currentLevel.update(playerPos);
+            }
+        })();
+
+        outIterator.next();
+
+        return outIterator;
+    }
+
+    private getOnStateArriveListener = (): IterableIterator<void> => {
+
+        let _this = this;
+
+        let outIterator = (function* (): IterableIterator<void> {
+
+            while(true) {
+
+                yield 
             }
         })();
 

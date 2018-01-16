@@ -9,17 +9,15 @@ export default class EventHub {
         this.listeners.push(listener);
     }
 
-    public publishEvent = (...args: any[]): boolean => {
+    public publishEvent = (...args: any[]): Promise<boolean> => {
 
-        if(!this.isFrozen()) {
+        return Promise.resolve().then(() => { // execute all listeners next event loop
 
-            Promise.resolve().then(() => { // execute all listeners next event loop
-
+            if (!this.isFrozen())
                 this.publish(args);
-            });
-        }
-        
-        return this.isFrozen(); // was hub frozen when you tried to publish?
+
+            return this.isFrozen(); // was hub frozen when you tried to publish?
+        });
     }
 
     public publishEventSync = (...args: any[]): boolean => {

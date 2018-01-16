@@ -91,7 +91,7 @@ export default class GameStateService implements IGameStateService {
         }
     }
 
-    public goTo = (stateType: symbol, ...args: any[]) => {
+    public goTo = async (stateType: symbol, ...args: any[]) => {
 
         if(this.transitionPending) {
             console.error(`Cannot transition to state with symbol-type ${stateType.toString()}: transition in progress`);
@@ -115,7 +115,7 @@ export default class GameStateService implements IGameStateService {
         }
 
         this.transitionPending = true;
-        Promise.resolve().then(() => {
+        return Promise.resolve().then(() => {
 
             let fromStateGraph: Graph<GameState> = this.stateGraph.sibling();
             let fromState = fromStateGraph.moveByIndex(this.currentState.stateType);
@@ -163,7 +163,9 @@ export default class GameStateService implements IGameStateService {
             }
             
 
-            this.fireLifecycleEvents(fromState, toState, leaveStateStack, enterStateStack, args);
+            return this.fireLifecycleEvents(fromState, toState, leaveStateStack, enterStateStack, args);
+            
+        }).then(() => {
 
             this.transitionPending = false;
         });
@@ -184,35 +186,35 @@ export default class GameStateService implements IGameStateService {
         return outStack;
     }
 
-    private fireLifecycleEvents = (fromState: GameState, toState: GameState, leaveStates: GameState[], enterStates: GameState[], args: any[]) => {
+    private fireLifecycleEvents = async (fromState: GameState, toState: GameState, leaveStates: GameState[], enterStates: GameState[], args: any[]) => {
 
-        fromState.onStateDisembark.publishEventSync();
+        await fromState.onStateDisembark.publishEvent();
 
-        this.leaveAndFreeze(leaveStates);
-        this.enterAndUnfreeze(enterStates);
+        await this.leaveAndFreeze(leaveStates);
+        await this.enterAndUnfreeze(enterStates);
 
         this.currentState = toState;
 
-        toState.onStateArrive.publishEventSync(...args);
+        await toState.onStateArrive.publishEvent(...args);
     }
 
-    private leaveAndFreeze = (states: GameState[]) => {
+    private leaveAndFreeze = async (states: GameState[]) => {
 
         for(let i = 0; i < states.length; i++) {
 
             let state = states[i];
-            state.onStateExit.publishEventSync();
+            await state.onStateExit.publishEvent();
             state.freeze();
         }
     }
 
-    private enterAndUnfreeze = (states: GameState[]) => {
+    private enterAndUnfreeze = async (states: GameState[]) => {
 
         for(let i = states.length - 1; i >= 0; i--) {
 
             let state = states[i];
             state.unfreeze();
-            state.onStateEnter.publishEventSync();
+            await state.onStateEnter.publishEvent();
         }
     }
 }
