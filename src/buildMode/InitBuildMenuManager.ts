@@ -1,20 +1,21 @@
 import { injectable, inject } from "inversify";
-import IPauseManager from './IPauseManager';
+import IInitBuildMenuManager from "./IInitBuildMenuManager";
+import PauseState from "../state/overworld/PauseState";
 import { StateType } from './../state/StateType';
-import PauseState from './../state/overworld/PauseState';
+import InitBuildMenuState from "../state/buildMode/InitBuildMenuState";
+import InteractiveMenu from "../pause/InteractiveMenu";
+import IGameStateService from "../state/IGameStateService";
 import { TYPES } from './../types';
-import IGameStateService from './../state/IGameStateService';
-import IDrawable from './../display/IDrawable';
-import Color from './../common/Color';
 import { VIEW_DIMS } from './../worldConfig';
 import Grid from './../common/Grid';
-import InteractiveMenu from './InteractiveMenu';
+import Color from './../common/Color';
+import IDrawable from './../display/IDrawable';
 
 @injectable()
-export default class PauseManager implements IPauseManager {
+export default class InitBuildMenuManager implements IInitBuildMenuManager {
 
     constructor(
-        @inject(StateType.Pause) private pauseState: PauseState,
+        @inject(StateType.InitBuildMenu) private initBuildMenuState: InitBuildMenuState,
         @inject(TYPES.GameStateService) private gameStateService: IGameStateService) {
 
     }
@@ -25,20 +26,24 @@ export default class PauseManager implements IPauseManager {
 
         this.interactiveMenu = new InteractiveMenu([
             {
-                message: 'Resume',
-                action: () => this.gameStateService.goTo(StateType.Navigation)
+                message: 'Back',
+                action: () => this.gameStateService.goTo(StateType.Pause)
             },
             {
-                message: 'Build Mode',
-                action: () => this.gameStateService.goTo(StateType.InitBuildMenu)
+                message: 'New Level',
+                action: () => console.log('New Level')
+            },
+            {
+                message: 'Load Level',
+                action: () => console.log('Load Level')
             }
         ]);
 
-        this.pauseState.setViewHandler(() => {
+        this.initBuildMenuState.setViewHandler(() => {
 
             let outGrid = Grid.fill(VIEW_DIMS.X, VIEW_DIMS.Y, () => {
 
-                return <IDrawable> {
+                return <IDrawable>{
                     colorFore: new Color('F', 'F', 'F'),
                     colorBack: Color.black,
                     icon: ' '
@@ -50,7 +55,7 @@ export default class PauseManager implements IPauseManager {
             return outGrid.toArray();
         });
 
-        this.pauseState.gameEventHubs.keyDownHub.addListener(this.getMenuKeyListener());
+        this.initBuildMenuState.gameEventHubs.keyDownHub.addListener(this.getMenuKeyListener());
     }
 
     private getMenuKeyListener = (): IterableIterator<void> => {
@@ -66,17 +71,17 @@ export default class PauseManager implements IPauseManager {
 
                 if (keyPressed === 'Escape') {
 
-                    _this.gameStateService.goTo(StateType.Navigation);
+                    _this.gameStateService.goTo(StateType.Pause);
                 }
-                else if(keyPressed === 'ArrowUp') {
+                else if (keyPressed === 'ArrowUp') {
 
                     _this.interactiveMenu.moveSelectorUp();
                 }
                 else if (keyPressed === 'ArrowDown') {
-                    
+
                     _this.interactiveMenu.moveSelectorDown();
                 }
-                else if(keyPressed === 'Enter') {
+                else if (keyPressed === 'Enter') {
 
                     _this.interactiveMenu.executeMenuOption();
                 }

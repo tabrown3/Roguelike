@@ -5,10 +5,10 @@ import BaseState from '../BaseState';
 
 @injectable()
 @childOf(StateType.BuildMode)
-export default class MapEditorState extends BaseState {
+export default class InitBuildMenuState extends BaseState {
 
     public get stateType(): symbol {
 
-        return StateType.MapEditor;
+        return StateType.InitBuildMenu;
     }
 }

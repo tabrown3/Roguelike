@@ -10,7 +10,8 @@ let TYPES = {
     WorldMap: Symbol('WorldMap'),
     GameStateService: Symbol('GameStateService'),
     GameStateInitializer: Symbol('GameStateInitializer'),
-    PauseManager: Symbol('PauseManager')
+    PauseManager: Symbol('PauseManager'),
+    InitBuildMenuManager: Symbol('InitBuildMenuManager')
 };
 
 export { TYPES }

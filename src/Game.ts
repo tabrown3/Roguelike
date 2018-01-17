@@ -5,6 +5,7 @@ import { TYPES } from './types';
 import IGameStateService from './state/IGameStateService';
 import IWorldManager from './world/IWorldManager';
 import IPauseManager from './pause/IPauseManager';
+import IInitBuildMenuManager from './buildMode/IInitBuildMenuManager';
 
 @injectable()
 export class Game {
@@ -13,7 +14,8 @@ export class Game {
         @inject(TYPES.World) private world: IWorld,
         @inject(TYPES.ViewEngine) private viewEngine: IViewEngine,
         @inject(TYPES.GameStateService) private gameStateService: IGameStateService,
-        @inject(TYPES.PauseManager) private pauseManager: IPauseManager) {
+        @inject(TYPES.PauseManager) private pauseManager: IPauseManager,
+        @inject(TYPES.InitBuildMenuManager) private initBuildMenuManager: IInitBuildMenuManager) {
     }
 
     public start = async () => {
@@ -23,7 +25,7 @@ export class Game {
         
         this.world.init();
         this.pauseManager.init();
-
+        this.initBuildMenuManager.init();
 
         // THESE CALLS (below) MUST BE LAST
         let renderLoop = (timeStamp: number) => {

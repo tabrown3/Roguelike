@@ -13,6 +13,8 @@ import PauseState from './overworld/PauseState';
 import Graph from './../common/Graph';
 import BuildModeState from "./buildMode/BuildModeState";
 import MapEditorState from "./buildMode/MapEditorState";
+import InitBuildMenuState from "./buildMode/InitBuildMenuState";
+import LoadBuildLevelState from "./buildMode/LoadBuildLevelState";
 
 @injectable()
 export default class GameStateService implements IGameStateService {
@@ -54,7 +56,9 @@ export default class GameStateService implements IGameStateService {
         @inject(StateType.Navigation) private navigationState: NavigationState,
         @inject(StateType.Pause) private pauseState: PauseState,
         @inject(StateType.BuildMode) private buildModeState: BuildModeState,
-        @inject(StateType.MapEditor) private mapEditorState: MapEditorState
+        @inject(StateType.MapEditor) private mapEditorState: MapEditorState,
+        @inject(StateType.InitBuildMenu) private initBuildMenuState: InitBuildMenuState,
+        @inject(StateType.LoadBuildLevel) private loadBuildLevelState: LoadBuildLevelState
     ) {
 
         this.stateList = [
@@ -63,7 +67,9 @@ export default class GameStateService implements IGameStateService {
             this.navigationState,
             this.pauseState,
             this.buildModeState,
-            this.mapEditorState
+            this.mapEditorState,
+            this.initBuildMenuState,
+            this.loadBuildLevelState
         ];
 
         // verify all states in StateType are being injected (and only once)

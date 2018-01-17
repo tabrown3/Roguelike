@@ -20,6 +20,9 @@ import PauseState from './state/overworld/PauseState';
 import PauseManager from './pause/PauseManager'
 import BuildModeState from "./state/buildMode/BuildModeState";
 import MapEditorState from "./state/buildMode/MapEditorState";
+import InitBuildMenuState from "./state/buildMode/InitBuildMenuState";
+import LoadBuildLevelState from "./state/buildMode/LoadBuildLevelState";
+import InitBuildMenuManager from "./buildMode/InitBuildMenuManager";
 
 var container = new Container();
 container.bind(TYPES.Game).to(Game);
@@ -34,6 +37,7 @@ container.bind(TYPES.WorldMap).to(WorldMap).inSingletonScope();
 container.bind(TYPES.GameStateService).to(GameStateService).inSingletonScope();
 container.bind(TYPES.GameStateInitializer).to(GameStateInitializer);
 container.bind(TYPES.PauseManager).to(PauseManager).inSingletonScope();
+container.bind(TYPES.InitBuildMenuManager).to(InitBuildMenuManager).inSingletonScope();
 
 container.bind(StateType.Root).to(RootState).inSingletonScope();
 container.bind(StateType.Overworld).to(OverworldState).inSingletonScope();
@@ -41,5 +45,7 @@ container.bind(StateType.Navigation).to(NavigationState).inSingletonScope();
 container.bind(StateType.Pause).to(PauseState).inSingletonScope();
 container.bind(StateType.BuildMode).to(BuildModeState).inSingletonScope();
 container.bind(StateType.MapEditor).to(MapEditorState).inSingletonScope();
+container.bind(StateType.InitBuildMenu).to(InitBuildMenuState).inSingletonScope();
+container.bind(StateType.LoadBuildLevel).to(LoadBuildLevelState).inSingletonScope();
 
 export { container };
