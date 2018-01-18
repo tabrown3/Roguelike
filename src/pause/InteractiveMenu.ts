@@ -1,6 +1,7 @@
 import Grid from './../common/Grid';
 import IDrawable from './../display/IDrawable';
 import Color from './../common/Color';
+import GridUtil from '../common/util/GridUtil';
 
 export default class InteractiveMenu {
 
@@ -24,18 +25,11 @@ export default class InteractiveMenu {
         let loopCount = 0;
         for (const option of menuOptions) {
 
-            tempGrid.superimpose(this.stringToGrid(option.message), this.OPTION_LEFT_PADDING, loopCount * this.OPTION_HEIGHT);
+            tempGrid.superimpose(GridUtil.stringToGrid(option.message), this.OPTION_LEFT_PADDING, loopCount * this.OPTION_HEIGHT);
             loopCount++;
         }
 
-        this.drawableGrid = tempGrid.map((val) => {
-
-            return <IDrawable>{
-                colorFore: new Color('F', 'F', 'F'),
-                colorBack: Color.black,
-                icon: val
-            }
-        });
+        this.drawableGrid = GridUtil.stringGridToDrawable(tempGrid);
 
         this.drawableGrid.get(0, 0).icon = '*';
     }
@@ -75,21 +69,6 @@ export default class InteractiveMenu {
 
         let newDrawable = this.drawableGrid.get(0, newSelection * this.OPTION_HEIGHT);
         newDrawable.icon = '*';
-    }
-
-    private stringToGrid = (inString: string, rowOrientation: boolean = true): Grid<string> => {
-
-        let splitString = inString.split('');
-        let stringGrid = new Grid([splitString]);
-
-        // The string would appear as a column without transposition;
-        //  it's likely most people would expect a row, so defaulting to that
-        if (rowOrientation) {
-
-            stringGrid.transpose();
-        }
-
-        return stringGrid;
     }
 }
 

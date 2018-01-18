@@ -35,7 +35,7 @@ export default class InitBuildMenuManager implements IInitBuildMenuManager {
             },
             {
                 message: 'Load Level',
-                action: () => console.log('Load Level')
+                action: () => this.gameStateService.goTo(StateType.LoadBuildLevel)
             }
         ]);
 
