@@ -6,10 +6,11 @@ import IDrawable from './../display/IDrawable';
 import Color from './../common/Color';
 import { VIEW_DIMS } from './../worldConfig';
 import Grid from './../common/Grid';
-import InteractiveMenu from './../pause/InteractiveMenu';
+import InteractiveMenu from './../ui/InteractiveMenu';
 import LoadBuildLevelState from "../state/buildMode/LoadBuildLevelState";
 import ILoadBuildLevelManager from "./ILoadBuildLevelManager";
 import GridUtil from "../common/util/GridUtil";
+import TextEntryComponent from "../ui/TextEntryComponent";
 
 @injectable()
 export default class LoadBuildLevelManager implements ILoadBuildLevelManager {
@@ -20,11 +21,11 @@ export default class LoadBuildLevelManager implements ILoadBuildLevelManager {
 
     }
 
-    private textEntry: TextEntry;
+    private textEntry: TextEntryComponent;
 
     public init = () => {
 
-        this.textEntry = new TextEntry();
+        this.textEntry = new TextEntryComponent();
 
         this.loadBuildLevelState.setViewHandler(() => {
 
@@ -74,78 +75,5 @@ export default class LoadBuildLevelManager implements ILoadBuildLevelManager {
         outIterator.next();
 
         return outIterator;
-    }
-}
-
-class TextEntry {
-
-    private drawableGrid: Grid<IDrawable>;
-
-    private enteredValue: string = '';
-    private cursorGrid: Grid<IDrawable>;
-    private enteredValueGrid: Grid<IDrawable>;
-
-    constructor(initVal?: string) {
-
-        this.cursorGrid = Grid.fill(1, 1, () => {
-
-            return <IDrawable>{
-                colorFore: new Color('F', 'F', 'F'),
-                colorBack: new Color('F', 'F', 'F'),
-                icon: ' '
-            }
-        });
-
-        if(initVal) {
-
-            this.setValue(initVal);
-        }
-        else {
-
-            this.drawableGrid = this.cursorGrid;
-        }
-    }
-    
-    public getView = (): Grid<IDrawable> => {
-
-        return this.drawableGrid;
-    }
-
-    private setValue = (val: string) => {
-
-        this.enteredValue = val;
-        this.enteredValueGrid = GridUtil.stringToGridDrawable(this.enteredValue);
-
-        let tempGrid = Grid.fill<IDrawable>(this.enteredValue.length + 1, 1, () => null);
-        tempGrid.superimpose(this.cursorGrid, this.enteredValue.length, 0);
-        tempGrid.superimpose(this.enteredValueGrid, 0, 0);
-
-        this.drawableGrid = tempGrid;//GridUtil.stringToGridDrawable(this.enteredValue);
-    }
-
-    public getValue = () => {
-
-        return this.enteredValue;
-    }
-
-    public processKey = (code: string): boolean => { // returns whether the key was processed
-
-        let keyWasProcessed = false;
-
-        if(code !== 'Shift') {
-
-            if (code.length === 1 && /[a-zA-Z/_.-]/.test(code)) {
-
-                this.setValue(this.enteredValue + code);
-                keyWasProcessed = true;
-            }
-            else if (code === 'Backspace') {
-
-                this.setValue(this.enteredValue.substr(0, this.enteredValue.length - 1));
-                keyWasProcessed = true;
-            }
-        }
-        
-        return keyWasProcessed;
     }
 }

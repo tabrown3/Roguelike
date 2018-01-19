@@ -1,7 +1,7 @@
 import Grid from './../common/Grid';
 import IDrawable from './../display/IDrawable';
 import Color from './../common/Color';
-import GridUtil from '../common/util/GridUtil';
+import GridUtil from './../common/util/GridUtil';
 
 export default class InteractiveMenu {
 

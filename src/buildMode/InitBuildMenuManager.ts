@@ -3,7 +3,7 @@ import IInitBuildMenuManager from "./IInitBuildMenuManager";
 import PauseState from "../state/overworld/PauseState";
 import { StateType } from './../state/StateType';
 import InitBuildMenuState from "../state/buildMode/InitBuildMenuState";
-import InteractiveMenu from "../pause/InteractiveMenu";
+import InteractiveMenu from "./../ui/InteractiveMenu";
 import IGameStateService from "../state/IGameStateService";
 import { TYPES } from './../types';
 import { VIEW_DIMS } from './../worldConfig';

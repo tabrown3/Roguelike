@@ -1,14 +1,42 @@
 import Grid from "../Grid";
 import IDrawable from "../../display/IDrawable";
 import Color from "../Color";
+import StringUtil from "./StringUtil";
 
 export default class GridUtil {
 
     // takes string, returns grid of characters
-    public static stringToGrid = (inString: string, rowOrientation: boolean = true): Grid<string> => {
+    public static stringToGrid = (inString: string, rowOrientation: boolean = true, useWordwrap: boolean = false, wordwrapOptions?: WordwrapOptions): Grid<string> => {
 
-        let splitString = inString.split('');
-        let stringGrid = new Grid([splitString]);
+        let wrappedString: string[];
+
+        let defaultWordwrapOptions: WordwrapOptions = {
+            maxWidth: 50,
+            trimResults: true
+        };
+
+        if(useWordwrap) {
+
+            let completeOptions: WordwrapOptions;
+
+            if(wordwrapOptions) {
+
+                completeOptions = Object.assign(defaultWordwrapOptions, wordwrapOptions);
+            }
+            else {
+
+                completeOptions = defaultWordwrapOptions;
+            }
+
+            wrappedString = StringUtil.wordwrap(inString, completeOptions.maxWidth, completeOptions.trimResults);
+        }
+        else {
+
+            wrappedString = [inString];
+        }
+
+        let splitStrings = wrappedString.map(elem => elem.split(''));
+        let stringGrid = new Grid(splitStrings);
 
         // The string would appear as a column without transposition;
         //  it's likely most people would expect a row, so defaulting to that
@@ -39,3 +67,8 @@ export default class GridUtil {
         return GridUtil.stringGridToDrawable(GridUtil.stringToGrid(inString, rowOrientation));
     }
 }
+
+type WordwrapOptions = {
+    maxWidth: number,
+    trimResults: boolean
+};

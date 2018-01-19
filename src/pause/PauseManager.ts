@@ -8,7 +8,7 @@ import IDrawable from './../display/IDrawable';
 import Color from './../common/Color';
 import { VIEW_DIMS } from './../worldConfig';
 import Grid from './../common/Grid';
-import InteractiveMenu from './InteractiveMenu';
+import InteractiveMenu from './../ui/InteractiveMenu';
 
 @injectable()
 export default class PauseManager implements IPauseManager {

@@ -1,4 +1,4 @@
-import InteractiveMenu from "../src/pause/InteractiveMenu";
+import InteractiveMenu from "./../src/ui/InteractiveMenu";
 
 describe('InteractiveMenu class', function() {
 
