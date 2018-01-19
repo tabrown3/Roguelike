@@ -22,7 +22,7 @@ export default class TextEntryComponent {
             }
         });
 
-        if (initVal) {
+        if (initVal && this.isValidInput(initVal)) {
 
             this.setValue(initVal);
         }
@@ -48,7 +48,7 @@ export default class TextEntryComponent {
 
         if (code !== 'Shift') {
 
-            if (code.length === 1 && /[a-zA-Z/_.-]/.test(code)) {
+            if (code.length === 1 && this.isValidInput(code)) {
 
                 this.setValue(this.enteredValue + code);
                 keyWasProcessed = true;
@@ -72,6 +72,12 @@ export default class TextEntryComponent {
         tempGrid.superimpose(this.cursorGrid, this.enteredValue.length, 0);
         tempGrid.superimpose(this.enteredValueGrid, 0, 0);
 
-        this.drawableGrid = tempGrid;//GridUtil.stringToGridDrawable(this.enteredValue);
+        this.drawableGrid = tempGrid;
+    }
+
+    // Returns true if the input string is a valid value for text entry
+    private isValidInput = (inString: string): boolean => {
+
+        return /^[a-zA-Z/_.-]+$/g.test(inString);
     }
 }
