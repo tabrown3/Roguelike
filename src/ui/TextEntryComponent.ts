@@ -22,7 +22,7 @@ export default class TextEntryComponent {
             }
         });
 
-        if (initVal && this.isValidInput(initVal)) {
+        if (initVal && this.isPrintableString(initVal)) {
 
             this.setValue(initVal);
         }
@@ -48,7 +48,7 @@ export default class TextEntryComponent {
 
         if (code !== 'Shift') {
 
-            if (code.length === 1 && this.isValidInput(code)) {
+            if (code.length === 1 && this.isPrintableString(code)) {
 
                 this.setValue(this.enteredValue + code);
                 keyWasProcessed = true;
@@ -76,7 +76,7 @@ export default class TextEntryComponent {
     }
 
     // Returns true if the input string is a valid value for text entry
-    private isValidInput = (inString: string): boolean => {
+    private isPrintableString = (inString: string): boolean => {
 
         return /^[a-zA-Z/_.-]+$/g.test(inString);
     }

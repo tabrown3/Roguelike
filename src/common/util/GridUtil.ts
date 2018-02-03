@@ -28,7 +28,7 @@ export default class GridUtil {
                 completeOptions = defaultWordwrapOptions;
             }
 
-            wrappedString = StringUtil.wordwrap(inString, completeOptions.maxWidth, completeOptions.trimResults);
+            wrappedString = StringUtil.wordwrap(inString, completeOptions.maxWidth, completeOptions.trimResults, false);
         }
         else {
 
@@ -62,9 +62,9 @@ export default class GridUtil {
     }
 
     // shortcut mapping function; takes string, return grid of drawables
-    public static stringToGridDrawable = (inString: string, rowOrientation: boolean = true): Grid<IDrawable> => {
+    public static stringToGridDrawable = (inString: string, rowOrientation: boolean = true, useWordwrap: boolean = false, wordwrapOptions?: WordwrapOptions): Grid<IDrawable> => {
 
-        return GridUtil.stringGridToDrawable(GridUtil.stringToGrid(inString, rowOrientation));
+        return GridUtil.stringGridToDrawable(GridUtil.stringToGrid(inString, rowOrientation, useWordwrap, wordwrapOptions));
     }
 }
 
