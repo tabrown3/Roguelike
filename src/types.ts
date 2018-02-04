@@ -12,7 +12,8 @@ let TYPES = {
     GameStateInitializer: Symbol('GameStateInitializer'),
     PauseManager: Symbol('PauseManager'),
     InitBuildMenuManager: Symbol('InitBuildMenuManager'),
-    LoadBuildLevelManager: Symbol('LoadBuildLevelManager')
+    LoadBuildLevelManager: Symbol('LoadBuildLevelManager'),
+    GameStateInjector: Symbol('GameStateInjector')
 };
 
 export { TYPES }

@@ -60,7 +60,7 @@ export default class LoadBuildLevelManager implements ILoadBuildLevelManager {
 
                 if (keyPressed === 'Escape') {
 
-                    _this.gameStateService.goTo(StateType.InitBuildMenu);
+                    _this.gameStateService.transitionTo(StateType.InitBuildMenu);
                 }
                 else if(_this.textEntry.processKey(keyPressed)) {
 

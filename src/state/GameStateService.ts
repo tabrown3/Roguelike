@@ -1,87 +1,57 @@
 import { injectable, inject } from "inversify";
 import { StateType } from './StateType';
-import RootState from './RootState';
-import OverworldState from './overworld/OverworldState';
-import NavigationState from './overworld/NavigationState';
 import IGameStateService from './IGameStateService';
 import GameState from './GameState';
-import { KEYS } from './StateRegistry';
-import EventHub from './../event/EventHub';
 import { TYPES } from '../types';
 import IGameStateInitializer from './IGameStateInitializer';
-import PauseState from './overworld/PauseState';
 import Graph from './../common/Graph';
-import BuildModeState from "./buildMode/BuildModeState";
-import MapEditorState from "./buildMode/MapEditorState";
-import InitBuildMenuState from "./buildMode/InitBuildMenuState";
-import LoadBuildLevelState from "./buildMode/LoadBuildLevelState";
+import IGameStateInjector from "./IGameStateInjector";
 
 @injectable()
 export default class GameStateService implements IGameStateService {
 
-    private readonly MAX_NAV_STACK_SIZE = 10;
-
     private transitionPending: boolean = false;
-
-    private readonly stateList: GameState[];
 
     private readonly stateGraph: Graph<GameState>;
 
-    private _navStack: GameState[] = [];
+    private _transitionHistory: GameState[] = [];
+    private get transitionHistory() {
+
+        return this._transitionHistory;
+    }
+
+    private _navStack: NavStackEntry[] = [];
     private get navStack() {
 
         return this._navStack;
     }
 
+    private _currentState: GameState = null;
     public get currentState() {
 
-        let lastIndex = this.navStack.length - 1;
-        
-        return (lastIndex >= 0) ? this.navStack[lastIndex] : null;
+        return this._currentState;
     }
 
     public set currentState(inState: GameState) {
 
-        this.navStack.push(inState);
-        
-        while(this.navStack.length > this.MAX_NAV_STACK_SIZE) {
-            this.navStack.shift();
-        }
+        this._currentState = inState;
     }
 
     constructor(
         @inject(TYPES.GameStateInitializer) private initializer: IGameStateInitializer,
-        @inject(StateType.Root) private rootState: RootState,
-        @inject(StateType.Overworld) private overworldState: OverworldState,
-        @inject(StateType.Navigation) private navigationState: NavigationState,
-        @inject(StateType.Pause) private pauseState: PauseState,
-        @inject(StateType.BuildMode) private buildModeState: BuildModeState,
-        @inject(StateType.MapEditor) private mapEditorState: MapEditorState,
-        @inject(StateType.InitBuildMenu) private initBuildMenuState: InitBuildMenuState,
-        @inject(StateType.LoadBuildLevel) private loadBuildLevelState: LoadBuildLevelState
+        @inject(TYPES.GameStateInjector) private stateInjector: IGameStateInjector
     ) {
 
-        this.stateList = [
-            this.rootState,
-            this.overworldState,
-            this.navigationState,
-            this.pauseState,
-            this.buildModeState,
-            this.mapEditorState,
-            this.initBuildMenuState,
-            this.loadBuildLevelState
-        ];
-
         // verify all states in StateType are being injected (and only once)
-        this.initializer.verifyStates(this.stateList, StateType);
+        this.initializer.verifyStates(this.stateInjector.stateList, StateType);
         // relay events that have relay decorator
-        this.initializer.autoRelay(this.stateList);
-        this.stateGraph = this.initializer.buildStateGraph(this.stateList, StateType);
+        this.initializer.autoRelay(this.stateInjector.stateList);
+        this.stateGraph = this.initializer.buildStateGraph(this.stateInjector.stateList, StateType);
     }
 
     public init = async () => {
 
-        this.currentState = this.rootState;
+        this.currentState = this.stateInjector.getState(StateType.Root);
 
         let myGraph = this.stateGraph.sibling()
         myGraph.moveByIndex(this.currentState.stateType);
@@ -89,17 +59,69 @@ export default class GameStateService implements IGameStateService {
         // all states start frozen; need to unfreeze current state
         myGraph.currentData.unfreeze();
 
-        // unfreeze parents of current state (if any)
-        // while (myGraph.currentHasParent()) { // unfreeze current state and parents
-
-        //     myGraph.moveToParent();
-        //     myGraph.currentData.unfreeze();
-        // }
-
-        await this.goTo(this.navigationState.stateType);
+        await this.transitionTo(StateType.Navigation);
     }
 
-    public goTo = async (stateType: symbol, ...args: any[]) => {
+    public navPush = async (stateType: symbol, ...args: any[]) => {
+
+        // Because there's no more deferred API, we basically have to capture a resolve/reject CB from the promise
+        let resolveRejectCb: (shouldResolve: boolean, resolveVal: any) => void;
+
+        const outPromise: Promise<any> = new Promise((res, rej) => {
+            
+            resolveRejectCb = (shouldResolve: boolean, resolveVal: any) => {
+
+                if(shouldResolve) {
+                    res(resolveVal);
+                }
+                else {
+                    rej();
+                }
+            };
+        });
+
+        this.goTo(stateType, currentState => {
+
+            this.navStack.push({
+                state: currentState,
+                deferred: resolveRejectCb
+            });
+        }, args);
+
+        return outPromise;
+    }
+
+    public navPop = async (...args: any[]) => {
+
+        const navStackLength = this.navStack.length;
+
+        if(!(navStackLength > 1)) {
+
+            throw new TypeError('Cannot perform navPop: no state in stack to go back to');
+        }
+
+        let oldNavEntry = this.navStack.pop();
+        await this.goTo(this.navStack[navStackLength - 1].state.stateType, null, args);
+
+        oldNavEntry.deferred(true, args);
+    }
+
+    public transitionTo = async (stateType: symbol, ...args: any[]) => {
+
+        while(this.navStack.length > 0) // clear out navStack before transition
+            this.navStack.pop();
+
+        await this.goTo(stateType, currentState => { 
+
+            this.transitionHistory.push(currentState);
+            this.navStack.push({
+                state: currentState,
+                deferred: null
+            });
+         }, args);
+    }
+
+    private goTo = async (stateType: symbol, manageHistory: (currentState: GameState) => void, args: any[]) => {
 
         if(this.transitionPending) {
             console.error(`Cannot transition to state with symbol-type ${stateType.toString()}: transition in progress`);
@@ -111,7 +133,7 @@ export default class GameStateService implements IGameStateService {
             throw new TypeError('stateType must be of type \'symbol\'');
         }
 
-        let targetState = this.stateList.find(u => u.stateType === stateType);
+        let targetState = this.stateInjector.getState(stateType);
         if(!targetState) {
 
             throw new TypeError(`Could not transition to state with symbol-type ${stateType.toString()}: no state with symbol-type ${stateType.toString()} found`);
@@ -169,7 +191,7 @@ export default class GameStateService implements IGameStateService {
             }
             
 
-            return this.fireLifecycleEvents(fromState, toState, leaveStateStack, enterStateStack, args);
+            return this.fireLifecycleEvents(fromState, toState, leaveStateStack, enterStateStack, manageHistory, args);
 
         }).then(() => {
 
@@ -192,7 +214,7 @@ export default class GameStateService implements IGameStateService {
         return outStack;
     }
 
-    private fireLifecycleEvents = async (fromState: GameState, toState: GameState, leaveStates: GameState[], enterStates: GameState[], args: any[]) => {
+    private fireLifecycleEvents = async (fromState: GameState, toState: GameState, leaveStates: GameState[], enterStates: GameState[], manageHistory: (currentState: GameState) => void, args: any[]) => {
 
         await fromState.onStateDisembark.publishEvent();
 
@@ -200,6 +222,11 @@ export default class GameStateService implements IGameStateService {
         await this.enterAndUnfreeze(enterStates);
 
         this.currentState = toState;
+
+        if (manageHistory) { // add state to respective stack unless it was a 'pop'
+
+            manageHistory(this.currentState);
+        }
 
         await toState.onStateArrive.publishEvent(...args);
     }
@@ -223,4 +250,10 @@ export default class GameStateService implements IGameStateService {
             await state.onStateEnter.publishEvent();
         }
     }
+}
+
+// promise resolves when state is popped off nav stack or rejected in event of transition
+interface NavStackEntry {
+    state: GameState;
+    deferred: (shouldResolve: boolean, resolveVal: any) => void;
 }

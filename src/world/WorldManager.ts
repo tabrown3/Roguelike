@@ -100,7 +100,7 @@ export default class WorldManager implements IWorldManager {
 
                 if(keyPressed === 'Escape') {
 
-                    _this.gameStateService.goTo(StateType.Pause);
+                    _this.gameStateService.transitionTo(StateType.Pause);
                 }
             }
         })();

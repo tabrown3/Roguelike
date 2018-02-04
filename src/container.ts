@@ -24,6 +24,7 @@ import InitBuildMenuState from "./state/buildMode/InitBuildMenuState";
 import LoadBuildLevelState from "./state/buildMode/LoadBuildLevelState";
 import InitBuildMenuManager from "./buildMode/InitBuildMenuManager";
 import LoadBuildLevelManager from "./buildMode/LoadBuildLevelManager";
+import GameStateInjector from "./state/GameStateInjector";
 
 var container = new Container();
 container.bind(TYPES.Game).to(Game);
@@ -40,6 +41,7 @@ container.bind(TYPES.GameStateInitializer).to(GameStateInitializer);
 container.bind(TYPES.PauseManager).to(PauseManager).inSingletonScope();
 container.bind(TYPES.InitBuildMenuManager).to(InitBuildMenuManager).inSingletonScope();
 container.bind(TYPES.LoadBuildLevelManager).to(LoadBuildLevelManager).inSingletonScope();
+container.bind(TYPES.GameStateInjector).to(GameStateInjector).inSingletonScope();
 
 container.bind(StateType.Root).to(RootState).inSingletonScope();
 container.bind(StateType.Overworld).to(OverworldState).inSingletonScope();

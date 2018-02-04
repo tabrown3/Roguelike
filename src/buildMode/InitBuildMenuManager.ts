@@ -27,7 +27,7 @@ export default class InitBuildMenuManager implements IInitBuildMenuManager {
         this.interactiveMenu = new InteractiveMenu([
             {
                 message: 'Back',
-                action: () => this.gameStateService.goTo(StateType.Pause)
+                action: () => this.gameStateService.transitionTo(StateType.Pause)
             },
             {
                 message: 'New Level',
@@ -35,7 +35,7 @@ export default class InitBuildMenuManager implements IInitBuildMenuManager {
             },
             {
                 message: 'Load Level',
-                action: () => this.gameStateService.goTo(StateType.LoadBuildLevel)
+                action: () => this.gameStateService.transitionTo(StateType.LoadBuildLevel)
             }
         ]);
 
@@ -71,7 +71,7 @@ export default class InitBuildMenuManager implements IInitBuildMenuManager {
 
                 if (keyPressed === 'Escape') {
 
-                    _this.gameStateService.goTo(StateType.Pause);
+                    _this.gameStateService.transitionTo(StateType.Pause);
                 }
                 else if (keyPressed === 'ArrowUp') {
 

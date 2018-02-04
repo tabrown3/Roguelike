@@ -26,11 +26,11 @@ export default class PauseManager implements IPauseManager {
         this.interactiveMenu = new InteractiveMenu([
             {
                 message: 'Resume',
-                action: () => this.gameStateService.goTo(StateType.Navigation)
+                action: () => this.gameStateService.transitionTo(StateType.Navigation)
             },
             {
                 message: 'Build Mode',
-                action: () => this.gameStateService.goTo(StateType.InitBuildMenu)
+                action: () => this.gameStateService.transitionTo(StateType.InitBuildMenu)
             }
         ]);
 
@@ -66,7 +66,7 @@ export default class PauseManager implements IPauseManager {
 
                 if (keyPressed === 'Escape') {
 
-                    _this.gameStateService.goTo(StateType.Navigation);
+                    _this.gameStateService.transitionTo(StateType.Navigation);
                 }
                 else if(keyPressed === 'ArrowUp') {
 
