@@ -11,11 +11,11 @@ import InitBuildMenuState from "./buildMode/InitBuildMenuState";
 import LoadBuildLevelState from "./buildMode/LoadBuildLevelState";
 import GameState from "./GameState";
 
-
 @injectable()
 export default class GameStateInjector implements IGameStateInjector {
 
     public readonly stateList: GameState[];
+    public readonly stateType: { [k: string]: symbol } = StateType;
 
     // Any state added to the game needs to go here
     constructor(

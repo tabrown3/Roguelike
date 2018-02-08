@@ -1,5 +1,4 @@
 import { injectable, inject } from "inversify";
-import { StateType } from './StateType';
 import IGameStateService from './IGameStateService';
 import GameState from './GameState';
 import { TYPES } from '../types';
@@ -43,15 +42,15 @@ export default class GameStateService implements IGameStateService {
     ) {
 
         // verify all states in StateType are being injected (and only once)
-        this.initializer.verifyStates(this.stateInjector.stateList, StateType);
+        this.initializer.verifyStates(this.stateInjector.stateList, this.stateInjector.stateType);
         // relay events that have relay decorator
         this.initializer.autoRelay(this.stateInjector.stateList);
-        this.stateGraph = this.initializer.buildStateGraph(this.stateInjector.stateList, StateType);
+        this.stateGraph = this.initializer.buildStateGraph(this.stateInjector.stateList, this.stateInjector.stateType);
     }
 
     public init = async () => {
 
-        this.currentState = this.stateInjector.getState(StateType.Root);
+        this.currentState = this.stateInjector.getState(this.stateInjector.stateType.Root);
 
         let myGraph = this.stateGraph.sibling()
         myGraph.moveByIndex(this.currentState.stateType);
@@ -59,10 +58,10 @@ export default class GameStateService implements IGameStateService {
         // all states start frozen; need to unfreeze current state
         myGraph.currentData.unfreeze();
 
-        await this.transitionTo(StateType.Navigation);
+        await this.transitionTo(this.stateInjector.stateType.Navigation);
     }
 
-    public navPush = async (stateType: symbol, ...args: any[]) => {
+    public navPush = (stateType: symbol, ...args: any[]) => {
 
         // Because there's no more deferred API, we basically have to capture a resolve/reject CB from the promise
         let resolveRejectCb: (shouldResolve: boolean, resolveVal: any) => void;
@@ -80,36 +79,44 @@ export default class GameStateService implements IGameStateService {
             };
         });
 
-        this.goTo(stateType, currentState => {
+        return {
+            toPromise: this.goTo(stateType, currentState => { // resolves when transition to state passed to navPush is complete
 
-            this.navStack.push({
-                state: currentState,
-                deferred: resolveRejectCb
-            });
-        }, args);
-
-        return outPromise;
+                this.navStack.push({
+                    state: currentState,
+                    deferred: resolveRejectCb
+                });
+            }, args),
+            fromPromise: outPromise // resolves when returning  back to the state navPush was called from
+        };
     }
 
-    public navPop = async (...args: any[]) => {
+    public navPop = async (returnVal: any) => {
 
-        const navStackLength = this.navStack.length;
+        const inNavStackLength = this.navStack.length;
 
-        if(!(navStackLength > 1)) {
+        if(!(inNavStackLength > 1)) {
 
             throw new TypeError('Cannot perform navPop: no state in stack to go back to');
         }
 
         let oldNavEntry = this.navStack.pop();
-        await this.goTo(this.navStack[navStackLength - 1].state.stateType, null, args);
+        await this.goTo(this.navStack[this.navStack.length - 1].state.stateType, null, [returnVal]);
 
-        oldNavEntry.deferred(true, args);
+        oldNavEntry.deferred(true, returnVal);
     }
 
     public transitionTo = async (stateType: symbol, ...args: any[]) => {
 
-        while(this.navStack.length > 0) // clear out navStack before transition
-            this.navStack.pop();
+        while(this.navStack.length > 0) { // clear out navStack before transition
+            
+            let oldNavStackEntry = this.navStack.pop();
+
+            if(oldNavStackEntry.deferred) {
+
+                oldNavStackEntry.deferred(false); // reject promise so states in stack aren't awaiting it
+            }
+        }
 
         await this.goTo(stateType, currentState => { 
 
@@ -255,5 +262,5 @@ export default class GameStateService implements IGameStateService {
 // promise resolves when state is popped off nav stack or rejected in event of transition
 interface NavStackEntry {
     state: GameState;
-    deferred: (shouldResolve: boolean, resolveVal: any) => void;
+    deferred: (shouldResolve: boolean, resolveVal?: any) => void;
 }
